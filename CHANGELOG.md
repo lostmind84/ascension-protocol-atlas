@@ -133,7 +133,7 @@ A discovery is a change: when a fact changes evidence level, say so here.
   (ADR 0007 and 0008 chose the Lua packet API instead).
 - `stub_fiches.py` skips `MSG_NULL`, `MAX` and `UMSG_*` (table markers and
   client-internal messages, not wire opcodes).
-- The repository is on GitHub (`lostmind84/coa-protocol-atlas`, private), branch `main`.
+- The repository is on GitHub (`lostmind84/ascension-protocol-atlas`, private), branch `main`.
 
 - `client/symbols/<build>/handler-strings.yaml` (Ghidra `HandlerStrings.java`): the string
   literals each of the 532 handlers references; `merge_strings.py` writes them into the
