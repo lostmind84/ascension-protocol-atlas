@@ -1,0 +1,82 @@
+id: 0x099e
+name: SMSG_PATCH_QUEST_FACTION_REWARD
+direction: server_to_client
+status: hypothetical
+evidence: L1
+client_builds:
+  - ascension-extensions-2026-08-13
+
+summary: >
+  One row of QuestFactionReward.dbc: id, QuestRewFactionValue[0..9] -- all eleven columns kept and named by AzerothCore, no strings. 11 dwords (44B), matching the table exactly.
+
+layout:
+  - name: id
+    type: u32
+    notes: DBC column 0 (n); name 'id' is AzerothCore's own DBCStructure.h struct member for QuestFactionReward.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/099e.c).
+    evidence: L1
+  - name: QuestRewFactionValue_0
+    type: u32
+    notes: DBC column 1 (i); name 'QuestRewFactionValue_0' is AzerothCore's own DBCStructure.h struct member for QuestFactionReward.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/099e.c).
+    evidence: L1
+  - name: QuestRewFactionValue_1
+    type: u32
+    notes: DBC column 2 (i); name 'QuestRewFactionValue_1' is AzerothCore's own DBCStructure.h struct member for QuestFactionReward.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/099e.c).
+    evidence: L1
+  - name: QuestRewFactionValue_2
+    type: u32
+    notes: DBC column 3 (i); name 'QuestRewFactionValue_2' is AzerothCore's own DBCStructure.h struct member for QuestFactionReward.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/099e.c).
+    evidence: L1
+  - name: QuestRewFactionValue_3
+    type: u32
+    notes: DBC column 4 (i); name 'QuestRewFactionValue_3' is AzerothCore's own DBCStructure.h struct member for QuestFactionReward.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/099e.c).
+    evidence: L1
+  - name: QuestRewFactionValue_4
+    type: u32
+    notes: DBC column 5 (i); name 'QuestRewFactionValue_4' is AzerothCore's own DBCStructure.h struct member for QuestFactionReward.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/099e.c).
+    evidence: L1
+  - name: QuestRewFactionValue_5
+    type: u32
+    notes: DBC column 6 (i); name 'QuestRewFactionValue_5' is AzerothCore's own DBCStructure.h struct member for QuestFactionReward.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/099e.c).
+    evidence: L1
+  - name: QuestRewFactionValue_6
+    type: u32
+    notes: DBC column 7 (i); name 'QuestRewFactionValue_6' is AzerothCore's own DBCStructure.h struct member for QuestFactionReward.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/099e.c).
+    evidence: L1
+  - name: QuestRewFactionValue_7
+    type: u32
+    notes: DBC column 8 (i); name 'QuestRewFactionValue_7' is AzerothCore's own DBCStructure.h struct member for QuestFactionReward.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/099e.c).
+    evidence: L1
+  - name: QuestRewFactionValue_8
+    type: u32
+    notes: DBC column 9 (i); name 'QuestRewFactionValue_8' is AzerothCore's own DBCStructure.h struct member for QuestFactionReward.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/099e.c).
+    evidence: L1
+  - name: QuestRewFactionValue_9
+    type: u32
+    notes: DBC column 10 (i); name 'QuestRewFactionValue_9' is AzerothCore's own DBCStructure.h struct member for QuestFactionReward.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/099e.c).
+    evidence: L1
+# Read from the decompiled handler (build/ghidra/handlers-c/099e.c), read by hand and cross-checked against src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa, 2026-09-20.
+
+client:
+  handler:
+    rva: "0x0022f7c0"
+    registration_site_rva: "0x00229417"
+    evidence: L3
+
+provenance:
+  - level: L1
+    source: "src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa (AzerothCore's own column layout and struct-member names for QuestFactionReward.dbc, read this session)"
+    claim: "the field names this fiche uses, and which columns AzerothCore keeps vs. skips"
+  - level: L3
+    source: "the decompiled handler (build/ghidra/handlers-c/099e.c), read by hand and cross-checked against src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa, 2026-09-20"
+    claim: "the layout: widths, order, repeat structure and field names"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/handler-fire.yaml (decompiled read sequence)"
+    claim: "the read widths and their order, as decompiled"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/opcodes.yaml (opcode-name switch)"
+    claim: "opcode 0x099e is named SMSG_PATCH_QUEST_FACTION_REWARD"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/handlers.yaml (handler registration scan)"
+    claim: "the client registers a handler for it"
+
+replay: null

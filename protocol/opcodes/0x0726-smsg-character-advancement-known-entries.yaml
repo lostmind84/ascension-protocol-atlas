@@ -1,0 +1,278 @@
+# The reference fiche. It documents a real packet AND the mistake that motivated this
+# repository: the `L1` provenance entry below is the belief that shipped a dead packet.
+id: 0x0726
+name: SMSG_CHARACTER_ADVANCEMENT_KNOWN_ENTRIES
+direction: server_to_client
+status: hypothetical
+evidence: L1
+client_builds:
+  - ascension-extensions-2026-08-13
+  - coa-extensions-rev4-2026-09-14
+client_datasets:
+  - ascension-live-2026-09-17
+
+summary: >
+  The complete set of Character Advancement entries the character holds. The client diffs
+  it against its own container, fires ASCENSION_KNOWN_ENTRY_UPDATED / _REMOVED, and
+  answers C_CharacterAdvancement.IsKnownID and GetTalentRankByID from it. Always the full
+  set, never a delta.
+
+layout:
+  - name: count
+    type: u32
+    evidence: L5
+    notes: 'The packet carries the COMPLETE set and replaces the client''s container. Proven: count=0 clears it and IsKnownID goes false for an entry that was known a moment before. The capture reference reports a login burst of twelve 0x0726 in one session, the first eleven with count = 1..11 and then a full eleven-record set in a different order, for payload sizes of 25 to 235 bytes. 4 + 21*1 = 25 and 4 + 21*11 = 235 exactly, so their sizes confirm this count and the 21-byte record below with nothing trailing it. A growing series is not a delta protocol: each packet is complete as of its moment, which is what this field means.
+
+      '
+  - repeat: count
+    fields:
+    - name: entryId
+      type: u32
+      evidence: L5
+      notes: 'CharacterAdvancement.dbc entry id. PRESENCE IN THE SET is what makes IsKnownID(entryId) answer true -- no other field is required.
+
+        '
+    - name: rank
+      type: u32
+      struct_offset: 8
+      evidence: L3
+      notes: 'THE RANK, by shape. Decompiled: the advancement service''s rank getter (RVA 0x00152920) walks a vector with stride 0x20, matches the key at record +0x04 and returns record +0x08 -- exactly where this field lands. An earlier note here said the opposite, reasoning from #4128''s unverified claim that the rank is read at +0x14; the normal path never reads +0x14. The lab''s 0 is explained and is NOT a packet problem: three accessors read one vector keyed at +0x04 -- membership, this rank at +0x08, and the lock byte at +0x10. IsLockedID matched the raw entry id in the very same forged record, so the record is stored and keyed correctly. GetTalentRankByID is the only accessor RESOLVED. The rank is stored here correctly; the client cannot read it back. GetTalentRankByID first consults the WILDCARD store (0x2c records, filled by SMSG_WILDCARD_ENTRY_LEARNED 0x0621), which is empty outside that game mode, then falls back to this store keyed on *(catalogue_entry + 0) -- not the entry id,
+        so it never matches. Proven by one forged record: u8=1 made IsLockedID true, which requires +0x04 == 31194 in this very vector, while +0x08=5 still read back as 0. A client defect, not a packet or server one. See client/symbols/.../rank-source.md. The capture reference reports rank = 1 in every record of its sample, which is consistent but proves nothing about which offset the client reads back.
+
+        '
+    - name: marker
+      type: u32
+      evidence: L1
+      notes: 'Third-party claim (#4128): 2 on automatic/implicit nodes, 1 elsewhere. Shipped as 0 by #4027. Sent as 0, 1 and 2 with no observable effect on IsKnownID, IsLockedID, IsTalentID or GetTalentRankByID. Whatever it selects, it is not any of those. The capture reference reports this u32 as the constant 1 in every record of a real login burst. That is COMPATIBLE with the lab, not a contradiction: the lab showed only that 0, 1 and 2 leave those four predicates unchanged, which says nothing about what a live server chose to send. Taken together the two readings say a real server sends 1 for ordinary entries, #4128 says 2 for automatic ones, and no client predicate we have queried can tell the difference. The consumer that distinguishes them has still not been found -- that is the open question, and it is unchanged.
+
+        '
+    - name: flag
+      type: u8
+      evidence: L5
+      role: locked
+      notes: 'THIS IS A LOCK FLAG, NOT A KNOWN GATE. Proven on a real client: 0 leaves the entry unlocked, and 1, 2 and 255 all make IsLockedID(entry) answer true, while IsKnownID stays true in every case. #4128''s reading -- that IsKnownID requires this byte to be 1 -- does not hold here. A locked entry is one the UI refuses to interact with, which looks like "the entry did not work" without being the same thing; that is very likely what was observed in game. The capture reference, by the same author as #4128, reports this byte as the constant 0 in every record of a live capture. A live server therefore sent 0 on entries the client plainly treated as known, which is what the lab proves and the opposite of what #4128 concluded. #4128''s gate reading should be considered withdrawn by its own author''s capture.
+
+        '
+    - name: buildTime
+      type: u32
+      evidence: L1
+      notes: 'Name from #4128. Shipped as 0 by #4027, and forging it has never been tested. The capture reference calls it a content/build timestamp and reports the single value 0x6A501487 in every record of its sample. Read as a little-endian u32 Unix timestamp that is 1783633031 = 2026-07-09 21:37:11 UTC; the reference''s own parenthetical says 2026-07-06, so their value and their date disagree by three days and we cannot tell which they meant. What survives that discrepancy is the shape: one value, identical across every record of one session, in the plausible range for a 2026 epoch second. That reads like a per-content-build stamp rather than anything per-entry -- but it is their capture, not ours, and no consumer of this field has been found in the binary. Still L1.
+
+        '
+    - name: reserved
+      type: u32
+      evidence: L1
+      notes: 'Observed 0 in every source, the capture reference included, which reports it as a constant 0 across a live session. Never forged, and no read of it has been found. Its presence, rather than its value, is what the reference''s 21-byte record and its 4 + 21n payload sizes confirm: there is a sixth field and nothing after it.
+
+        '
+# Read from the capture reference (CoinThrow, 2026-09-20, kept outside the tree -- see docs/crosscheck-cointhrow-2026-09-20.md), read against our own deserializer. Only the notes on marker, buildTime and reserved changed; every field keeps the level it already carried.
+
+client:
+  # Absolute addresses as published by a third party, converted to RVA by subtracting
+  # ImageBase 0x10000000 -- measured on both registered Extensions.dll builds
+  # (tools/extract/peinfo.py). The arithmetic is sound; the ATTRIBUTION is not, because
+  # the build the author read them from is unknown. The addresses remain L1 for that
+  # reason, not because the conversion is in doubt. See client/builds/*.delta.md: the CoA
+  # patch moves no code, so RVAs carry between the two registered builds except at ten
+  # listed sites.
+  deserializer:
+    address_observed: "0x10166899"
+    rva: "0x00166899"
+    function_rva: "0x00166760"
+    evidence_note: >
+      Re-derived: the registered handler for 0x0726 is at RVA 0x00171260 and calls
+      0x00166760 with the packet in ecx; 0x00166899 is the per-record loop inside it, so
+      #4128's address is correct and is a loop entry, not a function start.
+    symbol: null
+    evidence: L1
+    notes: "Claimed to read a record into key@+0x04, rank@+0x08, marker@+0x0c, flag@+0x10."
+  consumers:
+    - name: IsKnownID
+      address_observed: "0x10151480"
+      rva: "0x00151480"
+      evidence: L1
+      notes: >
+        Claimed to look up the node at [obj+0x230] and require [+0x10] == 1 with a rank at
+        [+0x14] that is neither 0 nor 0x2c.
+  struct:
+    name: CAKnownEntry
+    size: 0x20
+    evidence: L3
+    constructor: { rva: "0x00150020" }
+    # Read from the deserializer's stores and the constructor's zeroing, which agree.
+    fields: { entryId: 0x04, second_u32: 0x08, third_u32: 0x0c, flag: 0x10,
+              fifth_u32: 0x18, sixth_u32: 0x1c }
+    hole: "0x11..0x17 -- written by neither the constructor nor the deserializer"
+    notes: >
+      #4128 says IsKnownID wants a rank at +0x14. That offset is inside the hole, so it
+      cannot be this record; the claim must describe another object.
+
+used_by_server:   # the CoA server module sends or handles this
+  server_name: SMSG_CHARACTER_ADVANCEMENT_KNOWN_ENTRIES
+  files:
+    - modules/mod-ascension-compat/src/AscensionCompat.cpp
+
+client_strings:   # literals the handler references, from its decompilation
+  - "ASCENSION_KNOWN_ENTRY_UPDATED"
+  - "ASCENSION_ENTRY_UPDATED"
+  - "ASCENSION_KNOWN_ENTRY_REMOVED"
+  - "ASCENSION_KNOWN_ENTRIES_UPDATED"
+
+client_events:   # Lua arguments of the events this handler names (corpus ascension-ui-patch-b-stock, L2)
+  - event: ASCENSION_KNOWN_ENTRY_UPDATED
+    args: [internalID]
+    source: "Interface/AddOns/Ascension_ForcedPrimaryStat/PrimaryStat.lua:247"
+  - event: ASCENSION_KNOWN_ENTRY_UPDATED
+    args: []
+    source: "Interface/FrameXML/Util/DraftUtil.lua:233"
+  - event: ASCENSION_KNOWN_ENTRY_REMOVED
+    args: [nodeID]
+    source: "Interface/AddOns/AscensionUI/SkillTree/SkillTree.lua:882"
+
+client_fire:   # what the handler fires, from its decompilation (client/symbols/ascension-extensions-2026-08-13/handler-fire.yaml, L3)
+  - event: ASCENSION_KNOWN_ENTRIES_UPDATED
+    format: "%u"
+    helper: FUN_100b94b0
+    notes: >
+      Fires only when the received set differs from the held one (L5, 2026-09-19/20):
+      the server's empty resends after every UI reload fired nothing; every forge that
+      added or removed an entry fired it, with no Lua arguments recorded by evwatch.
+
+patches_table:   # the client DBC table this packet writes a row into (client/symbols/ascension-extensions-2026-08-13/patch-tables.yaml, L3; sizes from ascension-live-2026-09-17, L2)
+  - dbc: CharacterAdvancement.dbc
+    instance: "0x10bdf63c"   # the DLL's table object in .data; rows at +0x20, minId +0x10, maxId +0xc
+    record_size: 692
+    fields: 179
+
+provenance:
+  - level: L3
+    source: "the 148 Character Advancement Lua bindings decompiled 2026-09-20 (lua-bindings.yaml through DumpC.java)"
+    claim: "no Lua binding of the advancement service reads the known-entry record at +0x0c, the marker"
+    note: >
+      A bounded search, and a negative one: of the 148 bindings whose name touches entries,
+      ranks, talents, abilities, masteries, specs, loadouts or credits, none walks the
+      0x20-stride known-entries vector at +0x0c. The three that read some +0x0c read another
+      object entirely -- GetMaxRank walks an FNV-keyed map with its pair at +8 and +0xc,
+      IsRewardLocked reads a reward struct. This agrees with the lab, where forging marker as
+      0, 1 and 2 moved no queried predicate: if the field has a consumer it is not reachable
+      from Lua, and a C++-internal reader is not excluded by this search.
+  - level: L1
+    source: "the capture reference (CoinThrow, 2026-09-20, kept outside the tree -- see docs/crosscheck-cointhrow-2026-09-20.md), read against our own deserializer"
+    claim: "the record is 21 bytes; a live session sent rank 1, marker 1, flag 0, buildTime 0x6A501487 and reserved 0 in every record, in payloads of 25 to 235 bytes"
+    note: >
+      NO FIELD CHANGED LEVEL because of this entry, and none should: the capture is not
+      shared, so nothing here is re-derivable (docs/EVIDENCE.md). What it is good for is
+      arithmetic and agreement. The arithmetic: 4 + 21*1 = 25 and 4 + 21*11 = 235 match
+      their reported payload sizes exactly, and 21 is what our own deserializer reads
+      (u32, u32, u32, u8, u32, u32 -- client/symbols/ascension-extensions-2026-08-13/
+      0x0726-handler.md). Two independent readings of the record size now agree, one
+      from the wire and one from the instructions. The agreement: their flag = 0 on
+      entries a live client treated as known is the same conclusion the lab proved at
+      L5, and it comes from the author of #4128, whose gate reading it refutes. Their
+      marker = 1 is compatible with the lab, which only showed that 0, 1 and 2 move no
+      queried predicate. Their buildTime value is the first concrete datum we have for
+      that field and is still nobody's measurement but theirs.
+  - level: L5
+    source: "tools/replay/0x0726_flag_gate.py, run on slot 1, 2026-09-19"
+    claim: >
+      0x0726 replaces the known-entries container wholesale; presence of a record drives
+      IsKnownID; the u8 drives IsLockedID and nothing else observed; marker has no effect
+      on any queried predicate; the second u32 is not the rank GetTalentRankByID reports.
+    note: >
+      Forged with AzerothCore's own `.debug send opcode` against build
+      coa-extensions-rev4-2026-09-14, character Atlasprobe (first a Felsworn, then a
+      Barbarian, level 1; entries 31194 and 6753 -- the handler does not care whether the
+      entry belongs to the character's class), the CoA compat shim loaded. The shim overrides only GetActiveChrSpec, SwitchActiveChrSpec,
+      CanSwitchActiveChrSpec, GetEntriesByClass, GetEntryByInternalID and
+      GetPendingRankByEntryID -- measured by grepping both Compat files -- so IsKnownID,
+      IsLockedID and GetTalentRankByID answered natively. A re-run on the stock patch-B
+      would be stronger and is not blocked by anything but the stock client's inability
+      to reach a localhost realmlist.
+  - level: L5
+    source: "docs/lab-runs/2026-09-19.md and client/lua-packet-api.md"
+    claim: "the replay fails whenever a Lua RegisterPacket watch on 0x0726 is armed"
+    note: >
+      A pkwatch on 0x0726 replaces the native handler for the rest of the client's life:
+      the forged bytes are captured, IsKnownID never changes and
+      ASCENSION_KNOWN_ENTRIES_UPDATED never fires. Three FAILs on 2026-09-19 were that,
+      not the packet; a client restart without the watch passed. Never watch this opcode
+      in a session that tests it.
+  - level: L1
+    source: "hertigservices/Ascension_preservation (server/world_server.py, opcode notes)"
+    claim: "count, entryId, rank; remaining fields assumed to be zero padding"
+    note: >
+      THIS IS THE BELIEF THAT FAILED. azerothcore-wotlk-coa#4027 shipped it. The layout
+      was plausible and the packet was accepted, but the client ignored every entry
+      because `flag` was 0. The archive was not wrong about what it covered; it was
+      treated as complete when it was partial.
+  - level: L1
+    source: "azerothcore-wotlk-coa#4128 (CoinThrow), PR description and doc diff"
+    claim: "marker 1/2, flag gate, buildTime, deserializer and IsKnownID addresses, struct offsets"
+    note: >
+      The author reports live verification on 2026-09-19 and binary analysis. We cannot
+      reproduce it: the capture is not shared and the opcode notes are gitignored in that
+      branch. Graded L1 here per docs/EVIDENCE.md — our grade is about our ability to
+      re-derive, not about their work. Raising this is roadmap task P3.
+  - level: L2
+    source: "client/datasets/deltas/cointhrow-2026-09-09--ascension-live-2026-09-17.md"
+    claim: "entry 31194 is the same entry in both known data snapshots"
+    note: >
+      Corroboration, not proof of the layout. #4128 uses entry 31194 to illustrate the
+      `marker` semantics. Comparing the two catalogues shows 31194 present in both, its
+      record differing only by a string-block offset, same name. So that example is not
+      an artifact of a divergent catalogue — which leaves the layout claim itself still
+      unreproduced here.
+
+replay:
+  script: tools/replay/0x0726_flag_gate.py
+  asserts:
+    - "an empty set clears the container"
+    - "a record makes the entry known with u8=0"
+    - "a record makes the entry known with u8=1"
+    - "u8=0 leaves the entry unlocked"
+    - "u8=1 locks the entry"
+  asserts_measured:
+    - "count=0 -> IsKnownID(entry) false"
+    - "one record, u8=0 -> IsKnownID true, IsLockedID false"
+    - "one record, u8=1 -> IsKnownID true, IsLockedID true"
+  last_run: { date: 2026-09-20, result: pass, build: coa-extensions-rev4-2026-09-14,
+              dataset: ascension-live-2026-09-17, slot: 1 }
+
+open_questions:
+  - "Why does GetTalentRankByID answer 0 when the second u32 is set? The getter
+     (0x00152920) reads exactly that offset, +0x08, from a stride-0x20 record keyed
+     at +0x04, so the shape matches. Test whether the key is the catalogue entry's
+     internal id rather than the entry id (GetEntryByInternalID is bound at
+     0x001772b0), and whether the vector at [service+0x20] is the one this packet
+     fills."
+  - "An earlier conclusion that this packet cannot carry a rank has been withdrawn;
+     it rested on #4128's unverified +0x14 claim."
+  - "What does `marker` select? 0, 1 and 2 changed nothing observable through IsKnownID,
+     IsLockedID, IsTalentID or GetTalentRankByID. The capture reference reports a live
+     server sending 1 in every record, and #4128 reports 2 on automatic nodes; both are
+     consistent with the lab, because the lab only ruled out those four predicates. The
+     next step is the consumer, not another forge: find what reads record +0x0c."
+  - "Does anything else read the u8 besides IsLockedID?"
+  - "Re-run on the stock patch-B once the stock client can reach a localhost realmlist,
+     to remove the compat shim from the picture entirely."
+  - "What is `buildTime` — a timestamp, a build counter, something else? The capture
+     reference reports one constant value, 0x6A501487, across a whole session, which as
+     a little-endian Unix second is 2026-07-09 (their own text says 2026-07-06 — their
+     value and their date disagree). Nothing in the binary has been found to read this
+     field: find its consumer, or forge two different values and look for any difference."
+  - "Is `reserved` padding, or read by a consumer not yet found?"
+  - "Why does IsKnownID exclude rank 0x2c (44) specifically?"
+  - "Do the two `+0x10` references (deserializer field, IsKnownID check) denote the same
+     field of the same struct? The third-party notes imply it; nothing here confirms it."
+  - "Which build do the quoted absolute addresses come from? The dataset
+     cointhrow-2026-09-09 may come from that same install: if so, its Extensions.dll
+     SHA-256 and ImageBase would convert every address in this fiche to RVA and unblock
+     `status: proven` (ADR 0003). Ask the author."
+
+consumers_in_core:
+  - "modules/mod-ascension-compat/src/AscensionCoATalentState.cpp"
+  - "modules/mod-ascension-compat/src/AscensionCompat.cpp"
+
+related:
+  - 0x0725
+  - 0x0727

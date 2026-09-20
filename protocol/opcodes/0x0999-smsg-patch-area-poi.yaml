@@ -1,0 +1,129 @@
+id: 0x0999
+name: SMSG_PATCH_AREA_POI
+direction: server_to_client
+status: hypothetical
+evidence: L1
+client_builds:
+  - ascension-extensions-2026-08-13
+
+summary: >
+  One row of AreaPOI.dbc, collapsed: id, icon[0..10], x, y, z, mapId, an unnamed dword (val1), zoneId, then TWO strings (the table's two separate 16-slot locale blocks, `name` and `name2` -- both commented out in DBCStructure.h so left unnamed, each collapsed to its primary locale with its own flags dword dropped entirely), then worldState and an unnamed trailing dword (val2). 22 wire dwords (88B) plus two strings, against the table's own 54 columns/216 bytes -- confirmed field-by-field from the decompiled handler's read/skip offsets.
+
+layout:
+  - name: id
+    type: u32
+    notes: DBC column 0 (n); name 'id' is AzerothCore's own DBCStructure.h struct member for AreaPOI.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/0999.c).
+    evidence: L1
+  - name: icon_0
+    type: u32
+    notes: DBC column 1 (i); name 'icon_0' is AzerothCore's own DBCStructure.h struct member for AreaPOI.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/0999.c).
+    evidence: L1
+  - name: icon_1
+    type: u32
+    notes: DBC column 2 (i); name 'icon_1' is AzerothCore's own DBCStructure.h struct member for AreaPOI.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/0999.c).
+    evidence: L1
+  - name: icon_2
+    type: u32
+    notes: DBC column 3 (i); name 'icon_2' is AzerothCore's own DBCStructure.h struct member for AreaPOI.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/0999.c).
+    evidence: L1
+  - name: icon_3
+    type: u32
+    notes: DBC column 4 (i); name 'icon_3' is AzerothCore's own DBCStructure.h struct member for AreaPOI.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/0999.c).
+    evidence: L1
+  - name: icon_4
+    type: u32
+    notes: DBC column 5 (i); name 'icon_4' is AzerothCore's own DBCStructure.h struct member for AreaPOI.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/0999.c).
+    evidence: L1
+  - name: icon_5
+    type: u32
+    notes: DBC column 6 (i); name 'icon_5' is AzerothCore's own DBCStructure.h struct member for AreaPOI.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/0999.c).
+    evidence: L1
+  - name: icon_6
+    type: u32
+    notes: DBC column 7 (i); name 'icon_6' is AzerothCore's own DBCStructure.h struct member for AreaPOI.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/0999.c).
+    evidence: L1
+  - name: icon_7
+    type: u32
+    notes: DBC column 8 (i); name 'icon_7' is AzerothCore's own DBCStructure.h struct member for AreaPOI.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/0999.c).
+    evidence: L1
+  - name: icon_8
+    type: u32
+    notes: DBC column 9 (i); name 'icon_8' is AzerothCore's own DBCStructure.h struct member for AreaPOI.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/0999.c).
+    evidence: L1
+  - name: icon_9
+    type: u32
+    notes: DBC column 10 (i); name 'icon_9' is AzerothCore's own DBCStructure.h struct member for AreaPOI.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/0999.c).
+    evidence: L1
+  - name: icon_10
+    type: u32
+    notes: DBC column 11 (i); name 'icon_10' is AzerothCore's own DBCStructure.h struct member for AreaPOI.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/0999.c).
+    evidence: L1
+  - name: x
+    type: f32
+    notes: DBC column 12 (f); name 'x' is AzerothCore's own DBCStructure.h struct member for AreaPOI.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/0999.c).
+    evidence: L1
+  - name: y
+    type: f32
+    notes: DBC column 13 (f); name 'y' is AzerothCore's own DBCStructure.h struct member for AreaPOI.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/0999.c).
+    evidence: L1
+  - name: z
+    type: f32
+    notes: DBC column 14 (f); name 'z' is AzerothCore's own DBCStructure.h struct member for AreaPOI.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/0999.c).
+    evidence: L1
+  - name: mapId
+    type: u32
+    notes: DBC column 15 (i); name 'mapId' is AzerothCore's own DBCStructure.h struct member for AreaPOI.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/0999.c).
+    evidence: L1
+  - name: unknown_16
+    type: u32
+    notes: DBC column 16 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/0999.c). DBCStructure.h's comment calls this val1.
+    evidence: L3
+  - name: zoneId
+    type: u32
+    notes: DBC column 17 (i); name 'zoneId' is AzerothCore's own DBCStructure.h struct member for AreaPOI.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/0999.c).
+    evidence: L1
+  - name: unknown_name_locale
+    type: lpstring
+    notes: DBC columns 18-33 (16 string-offset columns, 's') plus a flags dword at column 34; DBCStructure.h comments out `name[16]` (not a compiled struct member), so unnamed. On the wire the whole 17-column locale block collapses to ONE length-prefixed string at this position; the other 15 locale slots and the flags dword are not present on the wire at all -- confirmed from the decompiled handler (build/ghidra/handlers-c/0999.c).
+    evidence: L3
+  - name: unknown_name2_locale
+    type: lpstring
+    notes: DBC columns 35-50 (16 string-offset columns, 's') plus a flags dword at column 51; DBCStructure.h comments out `name2[16]` (not a compiled struct member), so unnamed. On the wire the whole 17-column locale block collapses to ONE length-prefixed string at this position; the other 15 locale slots and the flags dword are not present on the wire at all -- confirmed from the decompiled handler (build/ghidra/handlers-c/0999.c).
+    evidence: L3
+  - name: worldState
+    type: u32
+    notes: DBC column 52 (i); name 'worldState' is AzerothCore's own DBCStructure.h struct member for AreaPOI.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/0999.c).
+    evidence: L1
+  - name: unknown_53
+    type: u32
+    notes: DBC column 53 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/0999.c). DBCStructure.h's comment calls this val2.
+    evidence: L3
+# Read from the decompiled handler (build/ghidra/handlers-c/0999.c), read by hand and cross-checked against src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa, 2026-09-20.
+
+client:
+  handler:
+    rva: "0x0022a330"
+    registration_site_rva: "0x002293c9"
+    evidence: L3
+
+provenance:
+  - level: L1
+    source: "src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa (AzerothCore's own column layout and struct-member names for AreaPOI.dbc, read this session)"
+    claim: "the field names this fiche uses, and which columns AzerothCore keeps vs. skips"
+  - level: L3
+    source: "the decompiled handler (build/ghidra/handlers-c/0999.c), read by hand and cross-checked against src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa, 2026-09-20"
+    claim: "the layout: widths, order, repeat structure and field names"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/handler-fire.yaml (decompiled read sequence)"
+    claim: "the read widths and their order, as decompiled"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/layouts.yaml (handler read sequence)"
+    claim: "the field widths and their order"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/opcodes.yaml (opcode-name switch)"
+    claim: "opcode 0x0999 is named SMSG_PATCH_AREA_POI"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/handlers.yaml (handler registration scan)"
+    claim: "the client registers a handler for it"
+
+replay: null

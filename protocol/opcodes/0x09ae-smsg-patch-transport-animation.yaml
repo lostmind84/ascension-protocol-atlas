@@ -1,0 +1,66 @@
+id: 0x09ae
+name: SMSG_PATCH_TRANSPORT_ANIMATION
+direction: server_to_client
+status: hypothetical
+evidence: L1
+client_builds:
+  - ascension-extensions-2026-08-13
+
+summary: >
+  One row of TransportAnimation.dbc: an id (FT_SORT index column, conventional name), TransportEntry, TimeSeg, X, Y, Z -- all named -- then one unnamed trailing dword (MovementId, commented out). No strings. 7 dwords (28B), matching the table exactly.
+
+layout:
+  - name: id
+    type: u32
+    notes: DBC column 0, format char 'd' (FT_SORT/FT_IND, the record's own index field per src/common/DataStores/DBCFileLoader.h); DBCStructure.h comments this column out (not a compiled struct member) but the format character itself conventionally marks it as the row's id, so named 'id' at L1; width/position confirmed from the decompiled handler (build/ghidra/handlers-c/09ae.c).
+    evidence: L1
+  - name: TransportEntry
+    type: u32
+    notes: DBC column 1 (i); name 'TransportEntry' is AzerothCore's own DBCStructure.h struct member for TransportAnimation.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09ae.c).
+    evidence: L1
+  - name: TimeSeg
+    type: u32
+    notes: DBC column 2 (i); name 'TimeSeg' is AzerothCore's own DBCStructure.h struct member for TransportAnimation.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09ae.c).
+    evidence: L1
+  - name: X
+    type: f32
+    notes: DBC column 3 (f); name 'X' is AzerothCore's own DBCStructure.h struct member for TransportAnimation.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09ae.c).
+    evidence: L1
+  - name: Y
+    type: f32
+    notes: DBC column 4 (f); name 'Y' is AzerothCore's own DBCStructure.h struct member for TransportAnimation.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09ae.c).
+    evidence: L1
+  - name: Z
+    type: f32
+    notes: DBC column 5 (f); name 'Z' is AzerothCore's own DBCStructure.h struct member for TransportAnimation.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09ae.c).
+    evidence: L1
+  - name: unknown_6
+    type: u32
+    notes: DBC column 6 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/09ae.c). DBCStructure.h's comment names it MovementId but the line is commented out.
+    evidence: L3
+# Read from the decompiled handler (build/ghidra/handlers-c/09ae.c), read by hand and cross-checked against src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa, 2026-09-20.
+
+client:
+  handler:
+    rva: "0x00233cc0"
+    registration_site_rva: "0x0022950d"
+    evidence: L3
+
+provenance:
+  - level: L1
+    source: "src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa (AzerothCore's own column layout and struct-member names for TransportAnimation.dbc, read this session)"
+    claim: "the field names this fiche uses, and which columns AzerothCore keeps vs. skips"
+  - level: L3
+    source: "the decompiled handler (build/ghidra/handlers-c/09ae.c), read by hand and cross-checked against src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa, 2026-09-20"
+    claim: "the layout: widths, order, repeat structure and field names"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/handler-fire.yaml (decompiled read sequence)"
+    claim: "the read widths and their order, as decompiled"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/opcodes.yaml (opcode-name switch)"
+    claim: "opcode 0x09ae is named SMSG_PATCH_TRANSPORT_ANIMATION"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/handlers.yaml (handler registration scan)"
+    claim: "the client registers a handler for it"
+
+replay: null

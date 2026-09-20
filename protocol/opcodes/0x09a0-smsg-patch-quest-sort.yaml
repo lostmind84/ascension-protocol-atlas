@@ -1,0 +1,53 @@
+id: 0x09a0
+name: SMSG_PATCH_QUEST_SORT
+direction: server_to_client
+status: hypothetical
+evidence: L1
+client_builds:
+  - ascension-extensions-2026-08-13
+
+summary: >
+  The most reduced row in this shard. QuestSort.dbc has 18 columns (id + a 16-slot `name` locale block + its flags dword), but the wire sends only: id, one unnamed dword read off the wire but never stored anywhere by the handler (DBCStructure.h's comment calls it the name-flags mask), then ONE unnamed string (the whole 16-slot locale block, commented out in DBCStructure.h so not named here) with no placeholder dword for the block at all -- unlike every other locale table in this shard, which at least spends one skip-dword on it. 8 bytes fixed plus one string, against the table's 72-byte record.
+
+layout:
+  - name: id
+    type: u32
+    notes: DBC column 0 (n); name 'id' is AzerothCore's own DBCStructure.h struct member for QuestSort.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a0.c).
+    evidence: L1
+  - name: unknown_17
+    type: u32
+    notes: 'DBC column 17 (format ''x''); DBCStructure.h''s comment calls this ''name flags'' (the m_SortName_lang mask). Confirmed from the decompiled handler (build/ghidra/handlers-c/09a0.c): the read cursor advances 8 bytes past ''id'' before the string read, but only the first 4 (id) are stored into a variable -- this second dword is consumed off the wire yet never written to the output record, so its value is read but effectively discarded by the client.'
+    evidence: L3
+  - name: unknown_1_locale
+    type: lpstring
+    notes: 'DBC columns 1-16 (16 string-offset columns, ''s''), AzerothCore''s DBCStructure.h comments this out (`//char const* name[16]; //1-16 m_SortName_lang`, not compiled), so unnamed by our rule (the comment''s own label ''m_SortName_lang'' is quoted here only for a future reader, not used as the field name). Unlike the other locale tables in this shard, the 16-slot block here contributes NO placeholder dword at all: the lpstring is read immediately after the discarded flags dword (confirmed from build/ghidra/handlers-c/09a0.c).'
+    evidence: L3
+# Read from the decompiled handler (build/ghidra/handlers-c/09a0.c), read by hand and cross-checked against src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa, 2026-09-20.
+
+client:
+  handler:
+    rva: "0x0022f9a0"
+    registration_site_rva: "0x00229435"
+    evidence: L3
+
+provenance:
+  - level: L1
+    source: "src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa (AzerothCore's own column layout and struct-member names for QuestSort.dbc, read this session)"
+    claim: "the field names this fiche uses, and which columns AzerothCore keeps vs. skips"
+  - level: L3
+    source: "the decompiled handler (build/ghidra/handlers-c/09a0.c), read by hand and cross-checked against src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa, 2026-09-20"
+    claim: "the layout: widths, order, repeat structure and field names"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/handler-fire.yaml (decompiled read sequence)"
+    claim: "the read widths and their order, as decompiled"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/layouts.yaml (handler read sequence)"
+    claim: "the field widths and their order"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/opcodes.yaml (opcode-name switch)"
+    claim: "opcode 0x09a0 is named SMSG_PATCH_QUEST_SORT"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/handlers.yaml (handler registration scan)"
+    claim: "the client registers a handler for it"
+
+replay: null

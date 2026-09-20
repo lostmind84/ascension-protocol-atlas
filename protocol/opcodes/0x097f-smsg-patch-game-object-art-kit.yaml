@@ -1,0 +1,73 @@
+id: 0x097f
+name: SMSG_PATCH_GAME_OBJECT_ART_KIT
+direction: server_to_client
+status: hypothetical
+evidence: L1
+client_builds:
+  - ascension-extensions-2026-08-13
+
+summary: >
+  One row of GameObjectArtKit.dbc: ID, then seven skipped-and-appended strings, all unnamed (AzerothCore comments them TextureVariation[0..2] and AttachModel[0..3] but the lines are commented out, not compiled). 8 dwords (32B) match the table exactly -- id is a plain read, the other seven positions are never captured as values, only as string-pointer targets. Table binding is L1 (third-party reference only).
+
+layout:
+  - name: ID
+    type: u32
+    notes: DBC column 0 (n); name 'ID' is AzerothCore's own DBCStructure.h struct member for GameObjectArtKit.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097f.c).
+    evidence: L1
+  - name: unknown_1_str
+    type: lpstring
+    notes: 'DBC column 1 (string offset on disk, ''s''); the wire sends the VALUE inline as a length-prefixed string (lpstring = FUN_100d3680: u32 length then that many bytes, no NUL), not the 4-byte offset the .dbc file itself stores. DBCStructure.h does not keep a named member for this column, so unnamed; the lpstring''s presence, order and position are confirmed from the decompiled handler (build/ghidra/handlers-c/097f.c). DBCStructure.h''s comment for this column reads ''TextureVariation[0]'' but the line is commented out (not compiled), so that text is not used as the field name.'
+    evidence: L3
+  - name: unknown_2_str
+    type: lpstring
+    notes: 'DBC column 2 (string offset on disk, ''s''); the wire sends the VALUE inline as a length-prefixed string (lpstring = FUN_100d3680: u32 length then that many bytes, no NUL), not the 4-byte offset the .dbc file itself stores. DBCStructure.h does not keep a named member for this column, so unnamed; the lpstring''s presence, order and position are confirmed from the decompiled handler (build/ghidra/handlers-c/097f.c). DBCStructure.h''s comment for this column reads ''TextureVariation[1]'' but the line is commented out (not compiled), so that text is not used as the field name.'
+    evidence: L3
+  - name: unknown_3_str
+    type: lpstring
+    notes: 'DBC column 3 (string offset on disk, ''s''); the wire sends the VALUE inline as a length-prefixed string (lpstring = FUN_100d3680: u32 length then that many bytes, no NUL), not the 4-byte offset the .dbc file itself stores. DBCStructure.h does not keep a named member for this column, so unnamed; the lpstring''s presence, order and position are confirmed from the decompiled handler (build/ghidra/handlers-c/097f.c). DBCStructure.h''s comment for this column reads ''TextureVariation[2]'' but the line is commented out (not compiled), so that text is not used as the field name.'
+    evidence: L3
+  - name: unknown_4_str
+    type: lpstring
+    notes: 'DBC column 4 (string offset on disk, ''s''); the wire sends the VALUE inline as a length-prefixed string (lpstring = FUN_100d3680: u32 length then that many bytes, no NUL), not the 4-byte offset the .dbc file itself stores. DBCStructure.h does not keep a named member for this column, so unnamed; the lpstring''s presence, order and position are confirmed from the decompiled handler (build/ghidra/handlers-c/097f.c). DBCStructure.h''s comment for this column reads ''AttachModel[0]'' but the line is commented out (not compiled), so that text is not used as the field name.'
+    evidence: L3
+  - name: unknown_5_str
+    type: lpstring
+    notes: 'DBC column 5 (string offset on disk, ''s''); the wire sends the VALUE inline as a length-prefixed string (lpstring = FUN_100d3680: u32 length then that many bytes, no NUL), not the 4-byte offset the .dbc file itself stores. DBCStructure.h does not keep a named member for this column, so unnamed; the lpstring''s presence, order and position are confirmed from the decompiled handler (build/ghidra/handlers-c/097f.c). DBCStructure.h''s comment for this column reads ''AttachModel[1]'' but the line is commented out (not compiled), so that text is not used as the field name.'
+    evidence: L3
+  - name: unknown_6_str
+    type: lpstring
+    notes: 'DBC column 6 (string offset on disk, ''s''); the wire sends the VALUE inline as a length-prefixed string (lpstring = FUN_100d3680: u32 length then that many bytes, no NUL), not the 4-byte offset the .dbc file itself stores. DBCStructure.h does not keep a named member for this column, so unnamed; the lpstring''s presence, order and position are confirmed from the decompiled handler (build/ghidra/handlers-c/097f.c). DBCStructure.h''s comment for this column reads ''AttachModel[2]'' but the line is commented out (not compiled), so that text is not used as the field name.'
+    evidence: L3
+  - name: unknown_7_str
+    type: lpstring
+    notes: 'DBC column 7 (string offset on disk, ''s''); the wire sends the VALUE inline as a length-prefixed string (lpstring = FUN_100d3680: u32 length then that many bytes, no NUL), not the 4-byte offset the .dbc file itself stores. DBCStructure.h does not keep a named member for this column, so unnamed; the lpstring''s presence, order and position are confirmed from the decompiled handler (build/ghidra/handlers-c/097f.c). DBCStructure.h''s comment for this column reads ''AttachModel[3]'' but the line is commented out (not compiled), so that text is not used as the field name.'
+    evidence: L3
+# Read from the decompiled handler (build/ghidra/handlers-c/097f.c), read by hand and cross-checked against src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa, 2026-09-20.
+
+client:
+  handler:
+    rva: "0x0022c460"
+    registration_site_rva: "0x0022923a"
+    evidence: L3
+
+provenance:
+  - level: L1
+    source: "src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa (AzerothCore's own column layout and struct-member names for GameObjectArtKit.dbc, read this session)"
+    claim: "the field names this fiche uses, and which columns AzerothCore keeps vs. skips"
+  - level: L3
+    source: "the decompiled handler (build/ghidra/handlers-c/097f.c), read by hand and cross-checked against src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa, 2026-09-20"
+    claim: "the layout: widths, order, repeat structure and field names"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/handler-fire.yaml (decompiled read sequence)"
+    claim: "the read widths and their order, as decompiled"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/layouts.yaml (handler read sequence)"
+    claim: "the field widths and their order"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/opcodes.yaml (opcode-name switch)"
+    claim: "opcode 0x097f is named SMSG_PATCH_GAME_OBJECT_ART_KIT"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/handlers.yaml (handler registration scan)"
+    claim: "the client registers a handler for it"
+
+replay: null

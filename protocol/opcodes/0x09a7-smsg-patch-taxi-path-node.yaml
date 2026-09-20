@@ -1,0 +1,82 @@
+id: 0x09a7
+name: SMSG_PATCH_TAXI_PATH_NODE
+direction: server_to_client
+status: hypothetical
+evidence: L1
+client_builds:
+  - ascension-extensions-2026-08-13
+
+summary: >
+  One row of TaxiPathNode.dbc: an id (the FT_SORT index column, commented out of DBCStructure.h but conventionally the row's id), then path, index, mapid, x, y, z, actionFlag, delay, arrivalEventID, departureEventID -- all kept and named. No strings. 11 dwords (44B), matching the table exactly.
+
+layout:
+  - name: id
+    type: u32
+    notes: DBC column 0, format char 'd' (FT_SORT/FT_IND, the record's own index field per src/common/DataStores/DBCFileLoader.h); DBCStructure.h comments this column out (not a compiled struct member) but the format character itself conventionally marks it as the row's id, so named 'id' at L1; width/position confirmed from the decompiled handler (build/ghidra/handlers-c/09a7.c).
+    evidence: L1
+  - name: path
+    type: u32
+    notes: DBC column 1 (i); name 'path' is AzerothCore's own DBCStructure.h struct member for TaxiPathNode.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a7.c).
+    evidence: L1
+  - name: index
+    type: u32
+    notes: DBC column 2 (i); name 'index' is AzerothCore's own DBCStructure.h struct member for TaxiPathNode.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a7.c).
+    evidence: L1
+  - name: mapid
+    type: u32
+    notes: DBC column 3 (i); name 'mapid' is AzerothCore's own DBCStructure.h struct member for TaxiPathNode.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a7.c).
+    evidence: L1
+  - name: x
+    type: f32
+    notes: DBC column 4 (f); name 'x' is AzerothCore's own DBCStructure.h struct member for TaxiPathNode.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a7.c).
+    evidence: L1
+  - name: y
+    type: f32
+    notes: DBC column 5 (f); name 'y' is AzerothCore's own DBCStructure.h struct member for TaxiPathNode.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a7.c).
+    evidence: L1
+  - name: z
+    type: f32
+    notes: DBC column 6 (f); name 'z' is AzerothCore's own DBCStructure.h struct member for TaxiPathNode.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a7.c).
+    evidence: L1
+  - name: actionFlag
+    type: u32
+    notes: DBC column 7 (i); name 'actionFlag' is AzerothCore's own DBCStructure.h struct member for TaxiPathNode.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a7.c).
+    evidence: L1
+  - name: delay
+    type: u32
+    notes: DBC column 8 (i); name 'delay' is AzerothCore's own DBCStructure.h struct member for TaxiPathNode.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a7.c).
+    evidence: L1
+  - name: arrivalEventID
+    type: u32
+    notes: DBC column 9 (i); name 'arrivalEventID' is AzerothCore's own DBCStructure.h struct member for TaxiPathNode.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a7.c).
+    evidence: L1
+  - name: departureEventID
+    type: u32
+    notes: DBC column 10 (i); name 'departureEventID' is AzerothCore's own DBCStructure.h struct member for TaxiPathNode.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a7.c).
+    evidence: L1
+# Read from the decompiled handler (build/ghidra/handlers-c/09a7.c), read by hand and cross-checked against src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa, 2026-09-20.
+
+client:
+  handler:
+    rva: "0x00233b50"
+    registration_site_rva: "0x002294a1"
+    evidence: L3
+
+provenance:
+  - level: L1
+    source: "src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa (AzerothCore's own column layout and struct-member names for TaxiPathNode.dbc, read this session)"
+    claim: "the field names this fiche uses, and which columns AzerothCore keeps vs. skips"
+  - level: L3
+    source: "the decompiled handler (build/ghidra/handlers-c/09a7.c), read by hand and cross-checked against src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa, 2026-09-20"
+    claim: "the layout: widths, order, repeat structure and field names"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/handler-fire.yaml (decompiled read sequence)"
+    claim: "the read widths and their order, as decompiled"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/opcodes.yaml (opcode-name switch)"
+    claim: "opcode 0x09a7 is named SMSG_PATCH_TAXI_PATH_NODE"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/handlers.yaml (handler registration scan)"
+    claim: "the client registers a handler for it"
+
+replay: null

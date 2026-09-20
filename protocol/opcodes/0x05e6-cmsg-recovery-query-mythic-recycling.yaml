@@ -1,0 +1,43 @@
+# Hand-written from the decompiled Lua binding (see client/client-senders.md,
+# "The recovery service"). Regenerating the atlas leaves this file alone.
+id: 0x05e6
+name: CMSG_RECOVERY_QUERY_MYTHIC_RECYCLING
+direction: client_to_server
+status: hypothetical
+evidence: L3
+client_builds:
+  - ascension-extensions-2026-08-13
+
+summary: >
+  Sent by the Lua binding C_RecoveryService.QueryCategory (FUN_10306880) when the category
+  string maps to table index 5, RECOVERY_SERVICE_CATEGORY_MYTHIC_RECYCLING. Empty packet: the binding begins the packet
+  with FUN_1008d690(0x5e6) and sends at once. The reply the UI waits for is the matching
+  SMSG_RECOVERY_QUERY_*_RESPONSE.
+
+layout: []   # empty packet: FUN_1008d690(opcode) then send, nothing between
+# client sender: FUN_10306880 (Lua C_RecoveryService.QueryCategory), switch case 5 at
+#   0x1030692f (`mov eax,0x5e6`), jump table 0x103069f8
+used_by:   # UI source calling the binding
+  - Interface/AddOns/Ascension_HelpUI/HelpMenu/HelpMenuItemRecoveryPanelMixin.lua
+
+client_binding:   # the Lua binding whose function sends this packet (client/symbols/ascension-extensions-2026-08-13/sender-bindings.yaml, L3) and the UI's calls (L2)
+  name: QueryCategory
+  function_rva: "0x00306880"
+  calls:
+    - {file: "Interface/AddOns/Ascension_HelpUI/HelpMenu/HelpMenuItemRecoveryPanelMixin.lua", line: 174, args: ["category"]}
+
+provenance:
+  - level: L3
+    source: "tools/ghidra/ghidra.sh run DecompAt.java 10306880 + objdump of the switch and its tail (client/client-senders.md)"
+    claim: "the opcode is selected by category and the packet is sent empty"
+  - level: L3
+    source: "tools/ghidra/ghidra.sh run DecompAt.java 1008d690 (GHIDRA_WORKSPACE=recovery-mystic, 2026-09-20)"
+    claim: "FUN_1008d690 is __thiscall(store, opcode): it only zero-inits the CDataStore, runs the CDataStore ctor and Put(u32)s the opcode -- no other write, closing the 'helper hides a field' trap (AGENTS.md pitfalls) for this sender"
+  - level: L2
+    source: "corpus ascension-ui-patch-b-stock, HelpMenuItemRecoveryPanelMixin.lua:16-22 and SharedXML/Enum.lua:1592"
+    claim: "the UI passes the category string RECOVERY_SERVICE_CATEGORY_MYTHIC_RECYCLING"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/opcodes.yaml (opcode-name switch)"
+    claim: "opcode 0x05e6 is named CMSG_RECOVERY_QUERY_MYTHIC_RECYCLING"
+
+replay: null

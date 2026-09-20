@@ -1,0 +1,33 @@
+# Ascension.exe (stock, ascension-exe-2010-06-25-stock, ImageBase 0x400000) functions read for the
+# wire path. Hand-curated from Ghidra decompilations (GHIDRA_PROGRAM=Ascension.exe.ORIGINAL
+# tools/ghidra/ghidra.sh run Decomp.java <VA>); see client/wire-path.md. Evidence L3.
+build: ascension-exe-2010-06-25-stock
+functions:
+  0x00401050: {name: CDataStore::CDataStore, role: "constructor: vtable 0x009e0e24; +4 buffer, +8 base, +0xc capacity, +0x10 size (write pos), +0x14 read pos = -1"}
+  0x00401130: {name: CDataStore::Finalize, role: "read pos (+0x14) := 0 -- called after the last Put, before Send"}
+  0x00403880: {name: CDataStore::~CDataStore, role: "frees the buffer through PTR_FUN_009e0e28"}
+  0x00778180: {name: "zlib::uncompress", role: "uncompress(dest, destLen, source, sourceLen): inflateInit_ with the version string \"1.2.2\", inflate(Z_FINISH) over a 47 000-byte window, inflateEnd; -5 (Z_BUF_ERROR) when the window is too small. SMSG 0x06AA sends a deflate stream through it"}
+  0x0047afe0: {name: CDataStore::Put(u8), role: "1 byte at the write pos"}
+  0x0047b040: {name: CDataStore::Put(u16), role: "2 bytes"}
+  0x0047b0a0: {name: CDataStore::Put(u32), role: "4 bytes -- Extensions.dll writes the opcode with it, then u32 fields"}
+  0x0047b100: {name: CDataStore::Put(u64), role: "8 bytes"}
+  0x0047b160: {name: CDataStore::Put(float), role: "4 bytes"}
+  0x0047b1c0: {name: CDataStore::PutData, role: "(ptr, size): raw bytes, grows the buffer through vtable +0xc"}
+  0x0047b300: {name: CDataStore::PutString, role: "(cstr): PutData(cstr, strlen + 1) -- NUL included"}
+  0x0047b290: {name: CDataStore::CanRead, role: "(pos, size): bounds check used by every Get"}
+  0x0047b340: {name: CDataStore::Get(u8), role: "1 byte at the read pos"}
+  0x0047b380: {name: CDataStore::Get(u16), role: "2 bytes -- ProcessMessage reads the opcode with it"}
+  0x0047b3c0: {name: CDataStore::Get(u32), role: "4 bytes"}
+  0x0047b400: {name: CDataStore::Get(u64), role: "8 bytes"}
+  0x0047b440: {name: CDataStore::Get(float), role: "4 bytes"}
+  0x0047b480: {name: CDataStore::GetString, role: "(buf, max): copies up to the NUL, read pos past it"}
+  0x0047b560: {name: CDataStore::GetData, role: "(ptr, size): raw bytes"}
+  0x00631fa0: {name: ClientServices::SetMessageHandler, role: "(opcode, handler, param): handlers[0x53c + opcode*4], params[0x19b8 + opcode*4] -- detoured by Extensions.dll to its registrar FUN_102c4400"}
+  0x00631fc0: {name: ClientServices::ClearMessageHandler, role: "(opcode): both cells := 0 -- detoured to LAB_102c3f80"}
+  0x00631fe0: {name: ClientServices::ProcessMessage, role: "(param, packet): Get(u16 opcode); `cmp esi, 0x51f` at 0x63200b (immediate at 0x63200d, patched to 0x9d4 by the DLL); handler(param, opcode, ticks, packet) from the tables -- detoured to the DLL dispatcher FUN_102c3ab0"}
+  0x00632b50: {name: ClientServices::Send, role: "(packet): state 5 = connected; size = write pos - read pos; header encrypted when +0x538; queued -- detoured to the DLL send hook FUN_102c3ff0"}
+  0x00632a40: {name: ClientServices::ClientServices, role: "constructor (vtable 0x00a26d78, __AUNETCLIENTNODE__) -- detoured to LAB_102c3a90"}
+  0x00406f40: {name: ClientServices::SendPacket, role: "wrapper: creates the singleton if absent, then Send"}
+  0x006b0970: {name: ClientServices::Ensure, role: "creates the singleton if absent"}
+  0x0040b7d0: {name: ExtensionsLoaderThunk, role: "the exe's own entry patch: `jmp 0x4e5cb0` into a code cave that sets DAT_00b6b474 := 1, LoadLibraryA(\"Extensions.dll\"), runs the displaced prologue and returns to 0x40b7d8"}
+  0x0086c4e0: {name: LoadLibraryA_wrapper, role: "call [0x9df248] = KERNEL32!LoadLibraryA"}

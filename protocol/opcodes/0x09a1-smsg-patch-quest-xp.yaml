@@ -1,0 +1,82 @@
+id: 0x09a1
+name: SMSG_PATCH_QUEST_XP
+direction: server_to_client
+status: hypothetical
+evidence: L1
+client_builds:
+  - ascension-extensions-2026-08-13
+
+summary: >
+  One row of QuestXP.dbc: id, Exp[0..9] -- all eleven columns kept and named by AzerothCore, no strings. 11 dwords (44B), matching the table exactly.
+
+layout:
+  - name: id
+    type: u32
+    notes: DBC column 0 (n); name 'id' is AzerothCore's own DBCStructure.h struct member for QuestXP.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a1.c).
+    evidence: L1
+  - name: Exp_0
+    type: u32
+    notes: DBC column 1 (i); name 'Exp_0' is AzerothCore's own DBCStructure.h struct member for QuestXP.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a1.c).
+    evidence: L1
+  - name: Exp_1
+    type: u32
+    notes: DBC column 2 (i); name 'Exp_1' is AzerothCore's own DBCStructure.h struct member for QuestXP.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a1.c).
+    evidence: L1
+  - name: Exp_2
+    type: u32
+    notes: DBC column 3 (i); name 'Exp_2' is AzerothCore's own DBCStructure.h struct member for QuestXP.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a1.c).
+    evidence: L1
+  - name: Exp_3
+    type: u32
+    notes: DBC column 4 (i); name 'Exp_3' is AzerothCore's own DBCStructure.h struct member for QuestXP.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a1.c).
+    evidence: L1
+  - name: Exp_4
+    type: u32
+    notes: DBC column 5 (i); name 'Exp_4' is AzerothCore's own DBCStructure.h struct member for QuestXP.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a1.c).
+    evidence: L1
+  - name: Exp_5
+    type: u32
+    notes: DBC column 6 (i); name 'Exp_5' is AzerothCore's own DBCStructure.h struct member for QuestXP.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a1.c).
+    evidence: L1
+  - name: Exp_6
+    type: u32
+    notes: DBC column 7 (i); name 'Exp_6' is AzerothCore's own DBCStructure.h struct member for QuestXP.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a1.c).
+    evidence: L1
+  - name: Exp_7
+    type: u32
+    notes: DBC column 8 (i); name 'Exp_7' is AzerothCore's own DBCStructure.h struct member for QuestXP.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a1.c).
+    evidence: L1
+  - name: Exp_8
+    type: u32
+    notes: DBC column 9 (i); name 'Exp_8' is AzerothCore's own DBCStructure.h struct member for QuestXP.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a1.c).
+    evidence: L1
+  - name: Exp_9
+    type: u32
+    notes: DBC column 10 (i); name 'Exp_9' is AzerothCore's own DBCStructure.h struct member for QuestXP.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a1.c).
+    evidence: L1
+# Read from the decompiled handler (build/ghidra/handlers-c/09a1.c), read by hand and cross-checked against src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa, 2026-09-20.
+
+client:
+  handler:
+    rva: "0x0022fab0"
+    registration_site_rva: "0x00229444"
+    evidence: L3
+
+provenance:
+  - level: L1
+    source: "src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa (AzerothCore's own column layout and struct-member names for QuestXP.dbc, read this session)"
+    claim: "the field names this fiche uses, and which columns AzerothCore keeps vs. skips"
+  - level: L3
+    source: "the decompiled handler (build/ghidra/handlers-c/09a1.c), read by hand and cross-checked against src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa, 2026-09-20"
+    claim: "the layout: widths, order, repeat structure and field names"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/handler-fire.yaml (decompiled read sequence)"
+    claim: "the read widths and their order, as decompiled"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/opcodes.yaml (opcode-name switch)"
+    claim: "opcode 0x09a1 is named SMSG_PATCH_QUEST_XP"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/handlers.yaml (handler registration scan)"
+    claim: "the client registers a handler for it"
+
+replay: null

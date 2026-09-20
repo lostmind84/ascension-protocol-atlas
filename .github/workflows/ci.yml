@@ -1,0 +1,34 @@
+name: ci
+
+# Fast checks only. The client cannot run here, so CI validates the shape and internal
+# consistency of the fact database. Proving facts is the lab run's job — see
+# docs/ARCHITECTURE.md, "Verification".
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: python3 -m pip install pyyaml
+
+      - name: Validate fiches
+        run: python3 tools/lint/lint_fiches.py
+
+      - name: Coverage and export are current
+        run: python3 tools/codegen/coverage.py --check && python3 tools/codegen/emit.py --check && python3 tools/codegen/site.py --check && python3 tools/atlas.py coverage
+
+      - name: Reject committed game assets
+        run: ./tools/lint/check_no_assets.sh
+
+      - name: Reject trailing whitespace
+        run: git diff --check "$(git hash-object -t tree /dev/null)" HEAD

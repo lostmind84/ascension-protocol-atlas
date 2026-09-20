@@ -1,0 +1,161 @@
+id: 0x098b
+name: SMSG_PATCH_SOUND_ENTRIES
+direction: server_to_client
+status: hypothetical
+evidence: L1
+client_builds:
+  - ascension-extensions-2026-08-13
+
+summary: >
+  One row of SoundEntries.dbc: Id (named), an unnamed dword (Type), then 11 skipped-and-appended strings (InternalName, FileName[0..9] -- all unnamed, AzerothCore comments them but does not compile them), ten unnamed dwords (Freq[0..9]), one more skipped-and-appended string (Path, unnamed), then six unnamed trailing dwords. 30 dwords (120B) and 12 strings match the table exactly; AzerothCore's own format string marks every column but the id 'x' (unused), so none of the string positions come from the core -- they come from the decompiled handler's own read/skip pattern, matched 1:1 against DBCStructure.h's bare positional comments. Table binding is L1 (third-party reference only).
+
+layout:
+  - name: Id
+    type: u32
+    notes: DBC column 0 (n); name 'Id' is AzerothCore's own DBCStructure.h struct member for SoundEntries.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/098b.c).
+    evidence: L1
+  - name: unknown_1
+    type: u32
+    notes: DBC column 1 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/098b.c). DBCStructure.h's bare comment calls this m_soundType.
+    evidence: L3
+  - name: unknown_2_str
+    type: lpstring
+    notes: 'DBC column 2 (string offset on disk, ''s''); the wire sends the VALUE inline as a length-prefixed string (lpstring = FUN_100d3680: u32 length then that many bytes, no NUL), not the 4-byte offset the .dbc file itself stores. DBCStructure.h does not keep a named member for this column, so unnamed; the lpstring''s presence, order and position are confirmed from the decompiled handler (build/ghidra/handlers-c/098b.c). DBCStructure.h''s comment for this column reads ''InternalName (m_name)'' but the line is commented out (not compiled), so that text is not used as the field name.'
+    evidence: L3
+  - name: unknown_3_str
+    type: lpstring
+    notes: 'DBC column 3 (string offset on disk, ''s''); the wire sends the VALUE inline as a length-prefixed string (lpstring = FUN_100d3680: u32 length then that many bytes, no NUL), not the 4-byte offset the .dbc file itself stores. DBCStructure.h does not keep a named member for this column, so unnamed; the lpstring''s presence, order and position are confirmed from the decompiled handler (build/ghidra/handlers-c/098b.c). DBCStructure.h''s comment for this column reads ''FileName[0] (m_File[10])'' but the line is commented out (not compiled), so that text is not used as the field name.'
+    evidence: L3
+  - name: unknown_4_str
+    type: lpstring
+    notes: 'DBC column 4 (string offset on disk, ''s''); the wire sends the VALUE inline as a length-prefixed string (lpstring = FUN_100d3680: u32 length then that many bytes, no NUL), not the 4-byte offset the .dbc file itself stores. DBCStructure.h does not keep a named member for this column, so unnamed; the lpstring''s presence, order and position are confirmed from the decompiled handler (build/ghidra/handlers-c/098b.c). DBCStructure.h''s comment for this column reads ''FileName[1] (m_File[10])'' but the line is commented out (not compiled), so that text is not used as the field name.'
+    evidence: L3
+  - name: unknown_5_str
+    type: lpstring
+    notes: 'DBC column 5 (string offset on disk, ''s''); the wire sends the VALUE inline as a length-prefixed string (lpstring = FUN_100d3680: u32 length then that many bytes, no NUL), not the 4-byte offset the .dbc file itself stores. DBCStructure.h does not keep a named member for this column, so unnamed; the lpstring''s presence, order and position are confirmed from the decompiled handler (build/ghidra/handlers-c/098b.c). DBCStructure.h''s comment for this column reads ''FileName[2] (m_File[10])'' but the line is commented out (not compiled), so that text is not used as the field name.'
+    evidence: L3
+  - name: unknown_6_str
+    type: lpstring
+    notes: 'DBC column 6 (string offset on disk, ''s''); the wire sends the VALUE inline as a length-prefixed string (lpstring = FUN_100d3680: u32 length then that many bytes, no NUL), not the 4-byte offset the .dbc file itself stores. DBCStructure.h does not keep a named member for this column, so unnamed; the lpstring''s presence, order and position are confirmed from the decompiled handler (build/ghidra/handlers-c/098b.c). DBCStructure.h''s comment for this column reads ''FileName[3] (m_File[10])'' but the line is commented out (not compiled), so that text is not used as the field name.'
+    evidence: L3
+  - name: unknown_7_str
+    type: lpstring
+    notes: 'DBC column 7 (string offset on disk, ''s''); the wire sends the VALUE inline as a length-prefixed string (lpstring = FUN_100d3680: u32 length then that many bytes, no NUL), not the 4-byte offset the .dbc file itself stores. DBCStructure.h does not keep a named member for this column, so unnamed; the lpstring''s presence, order and position are confirmed from the decompiled handler (build/ghidra/handlers-c/098b.c). DBCStructure.h''s comment for this column reads ''FileName[4] (m_File[10])'' but the line is commented out (not compiled), so that text is not used as the field name.'
+    evidence: L3
+  - name: unknown_8_str
+    type: lpstring
+    notes: 'DBC column 8 (string offset on disk, ''s''); the wire sends the VALUE inline as a length-prefixed string (lpstring = FUN_100d3680: u32 length then that many bytes, no NUL), not the 4-byte offset the .dbc file itself stores. DBCStructure.h does not keep a named member for this column, so unnamed; the lpstring''s presence, order and position are confirmed from the decompiled handler (build/ghidra/handlers-c/098b.c). DBCStructure.h''s comment for this column reads ''FileName[5] (m_File[10])'' but the line is commented out (not compiled), so that text is not used as the field name.'
+    evidence: L3
+  - name: unknown_9_str
+    type: lpstring
+    notes: 'DBC column 9 (string offset on disk, ''s''); the wire sends the VALUE inline as a length-prefixed string (lpstring = FUN_100d3680: u32 length then that many bytes, no NUL), not the 4-byte offset the .dbc file itself stores. DBCStructure.h does not keep a named member for this column, so unnamed; the lpstring''s presence, order and position are confirmed from the decompiled handler (build/ghidra/handlers-c/098b.c). DBCStructure.h''s comment for this column reads ''FileName[6] (m_File[10])'' but the line is commented out (not compiled), so that text is not used as the field name.'
+    evidence: L3
+  - name: unknown_10_str
+    type: lpstring
+    notes: 'DBC column 10 (string offset on disk, ''s''); the wire sends the VALUE inline as a length-prefixed string (lpstring = FUN_100d3680: u32 length then that many bytes, no NUL), not the 4-byte offset the .dbc file itself stores. DBCStructure.h does not keep a named member for this column, so unnamed; the lpstring''s presence, order and position are confirmed from the decompiled handler (build/ghidra/handlers-c/098b.c). DBCStructure.h''s comment for this column reads ''FileName[7] (m_File[10])'' but the line is commented out (not compiled), so that text is not used as the field name.'
+    evidence: L3
+  - name: unknown_11_str
+    type: lpstring
+    notes: 'DBC column 11 (string offset on disk, ''s''); the wire sends the VALUE inline as a length-prefixed string (lpstring = FUN_100d3680: u32 length then that many bytes, no NUL), not the 4-byte offset the .dbc file itself stores. DBCStructure.h does not keep a named member for this column, so unnamed; the lpstring''s presence, order and position are confirmed from the decompiled handler (build/ghidra/handlers-c/098b.c). DBCStructure.h''s comment for this column reads ''FileName[8] (m_File[10])'' but the line is commented out (not compiled), so that text is not used as the field name.'
+    evidence: L3
+  - name: unknown_12_str
+    type: lpstring
+    notes: 'DBC column 12 (string offset on disk, ''s''); the wire sends the VALUE inline as a length-prefixed string (lpstring = FUN_100d3680: u32 length then that many bytes, no NUL), not the 4-byte offset the .dbc file itself stores. DBCStructure.h does not keep a named member for this column, so unnamed; the lpstring''s presence, order and position are confirmed from the decompiled handler (build/ghidra/handlers-c/098b.c). DBCStructure.h''s comment for this column reads ''FileName[9] (m_File[10])'' but the line is commented out (not compiled), so that text is not used as the field name.'
+    evidence: L3
+  - name: unknown_13
+    type: u32
+    notes: DBC column 13 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/098b.c). DBCStructure.h's bare comment calls this m_Freq[10] (unused).
+    evidence: L3
+  - name: unknown_14
+    type: u32
+    notes: DBC column 14 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/098b.c). DBCStructure.h's bare comment calls this m_Freq[10] (unused).
+    evidence: L3
+  - name: unknown_15
+    type: u32
+    notes: DBC column 15 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/098b.c). DBCStructure.h's bare comment calls this m_Freq[10] (unused).
+    evidence: L3
+  - name: unknown_16
+    type: u32
+    notes: DBC column 16 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/098b.c). DBCStructure.h's bare comment calls this m_Freq[10] (unused).
+    evidence: L3
+  - name: unknown_17
+    type: u32
+    notes: DBC column 17 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/098b.c). DBCStructure.h's bare comment calls this m_Freq[10] (unused).
+    evidence: L3
+  - name: unknown_18
+    type: u32
+    notes: DBC column 18 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/098b.c). DBCStructure.h's bare comment calls this m_Freq[10] (unused).
+    evidence: L3
+  - name: unknown_19
+    type: u32
+    notes: DBC column 19 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/098b.c). DBCStructure.h's bare comment calls this m_Freq[10] (unused).
+    evidence: L3
+  - name: unknown_20
+    type: u32
+    notes: DBC column 20 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/098b.c). DBCStructure.h's bare comment calls this m_Freq[10] (unused).
+    evidence: L3
+  - name: unknown_21
+    type: u32
+    notes: DBC column 21 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/098b.c). DBCStructure.h's bare comment calls this m_Freq[10] (unused).
+    evidence: L3
+  - name: unknown_22
+    type: u32
+    notes: DBC column 22 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/098b.c). DBCStructure.h's bare comment calls this m_Freq[10] (unused).
+    evidence: L3
+  - name: unknown_23_str
+    type: lpstring
+    notes: 'DBC column 23 (string offset on disk, ''s''); the wire sends the VALUE inline as a length-prefixed string (lpstring = FUN_100d3680: u32 length then that many bytes, no NUL), not the 4-byte offset the .dbc file itself stores. DBCStructure.h does not keep a named member for this column, so unnamed; the lpstring''s presence, order and position are confirmed from the decompiled handler (build/ghidra/handlers-c/098b.c). DBCStructure.h''s comment for this column reads ''Path (m_DirectoryBase)'' but the line is commented out (not compiled), so that text is not used as the field name.'
+    evidence: L3
+  - name: unknown_24
+    type: u32
+    notes: DBC column 24 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/098b.c). DBCStructure.h's bare comment calls this m_volumeFloat.
+    evidence: L3
+  - name: unknown_25
+    type: u32
+    notes: DBC column 25 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/098b.c). DBCStructure.h's bare comment calls this m_flags.
+    evidence: L3
+  - name: unknown_26
+    type: u32
+    notes: DBC column 26 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/098b.c). DBCStructure.h's bare comment calls this m_minDistance.
+    evidence: L3
+  - name: unknown_27
+    type: u32
+    notes: DBC column 27 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/098b.c). DBCStructure.h's bare comment calls this m_distanceCutoff.
+    evidence: L3
+  - name: unknown_28
+    type: u32
+    notes: DBC column 28 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/098b.c). DBCStructure.h's bare comment calls this m_EAXDef.
+    evidence: L3
+  - name: unknown_29
+    type: u32
+    notes: 'DBC column 29 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/098b.c). comment: ''new in 3.1'', no further description.'
+    evidence: L3
+# Read from the decompiled handler (build/ghidra/handlers-c/098b.c), read by hand and cross-checked against src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa, 2026-09-20.
+
+client:
+  handler:
+    rva: "0x00230ac0"
+    registration_site_rva: "0x002292f4"
+    evidence: L3
+
+provenance:
+  - level: L1
+    source: "src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa (AzerothCore's own column layout and struct-member names for SoundEntries.dbc, read this session)"
+    claim: "the field names this fiche uses, and which columns AzerothCore keeps vs. skips"
+  - level: L3
+    source: "the decompiled handler (build/ghidra/handlers-c/098b.c), read by hand and cross-checked against src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa, 2026-09-20"
+    claim: "the layout: widths, order, repeat structure and field names"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/handler-fire.yaml (decompiled read sequence)"
+    claim: "the read widths and their order, as decompiled"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/layouts.yaml (handler read sequence)"
+    claim: "the field widths and their order"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/opcodes.yaml (opcode-name switch)"
+    claim: "opcode 0x098b is named SMSG_PATCH_SOUND_ENTRIES"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/handlers.yaml (handler registration scan)"
+    claim: "the client registers a handler for it"
+
+replay: null

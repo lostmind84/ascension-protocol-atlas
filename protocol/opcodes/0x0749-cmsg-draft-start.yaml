@@ -1,0 +1,39 @@
+# Hand-written from the decompiled Lua binding (see client/client-senders.md,
+# "Computed opcodes"). Regenerating the atlas leaves this file alone.
+id: 0x0749
+name: CMSG_DRAFT_START
+direction: client_to_server
+status: hypothetical
+evidence: L3
+client_builds:
+  - ascension-extensions-2026-08-13
+
+summary: >
+  Sent by the Lua binding ToggleDraftMode(enabled) (FUN_100dd6e0) with enabled = true:
+  the opcode is computed as 0x749 + (enabled == false), so one binding sends either
+  CMSG_DRAFT_START or CMSG_DRAFT_STOP. Empty packet.
+
+layout: []   # empty packet: constructor, Put(u32 opcode), send, nothing between
+# client sender: FUN_100dd6e0 (Lua ToggleDraftMode), 0x100dd767 `add eax,0x749` after
+#   `sete al` on the boolean argument; no PutData before the send at 0x100dd77d.
+# The opcode never appears as an immediate, which is why tools/extract/client_sender.py
+# cannot find this sender.
+
+provenance:
+  - level: L3
+    source: "tools/ghidra/ghidra.sh run DecompAt.java 100dd6e0 + objdump 0x100dd741-0x100dd798 (client/client-senders.md)"
+    claim: "the opcode is 0x749 + !enabled and the packet is empty"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/opcodes.yaml (opcode-name switch)"
+    claim: "opcode 0x0749 is named CMSG_DRAFT_START"
+  - level: L1
+    source: "the capture reference (CoinThrow, 2026-09-20, kept outside the tree)"
+    claim: "draft start (0x0749) has no sender in this build -- the opcode appears nowhere in Extensions.dll or Ascension.exe"
+    note: >
+      CONTRADICTED by the two L3 entries above: FUN_100dd6e0 (Lua ToggleDraftMode) does
+      send it, via a computed opcode that an immediate-only scan of Extensions.dll would
+      indeed miss, which is presumably how the capture reference's own scan missed it
+      too. Kept per docs/EVIDENCE.md ("a retraction keeps the wrong claim in provenance
+      with a note").
+
+replay: null

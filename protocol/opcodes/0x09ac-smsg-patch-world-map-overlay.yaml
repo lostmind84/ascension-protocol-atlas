@@ -1,0 +1,109 @@
+id: 0x09ac
+name: SMSG_PATCH_WORLD_MAP_OVERLAY
+direction: server_to_client
+status: hypothetical
+evidence: L1
+client_builds:
+  - ascension-extensions-2026-08-13
+
+summary: >
+  One row of WorldMapOverlay.dbc: ID, an unnamed dword (worldMapAreaId), areatableID[0..3] (named), two unnamed dwords ('always 0'), then one skipped-and-appended string (internal_name, unnamed), then eight unnamed trailing dwords ('some ints'). 17 dwords (68B) plus one string, matching the table exactly.
+
+layout:
+  - name: ID
+    type: u32
+    notes: DBC column 0 (n); name 'ID' is AzerothCore's own DBCStructure.h struct member for WorldMapOverlay.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09ac.c).
+    evidence: L1
+  - name: unknown_1
+    type: u32
+    notes: DBC column 1 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/09ac.c). DBCStructure.h's comment calls this worldMapAreaId (index into WorldMapArea.dbc).
+    evidence: L3
+  - name: areatableID_0
+    type: u32
+    notes: DBC column 2 (i); name 'areatableID_0' is AzerothCore's own DBCStructure.h struct member for WorldMapOverlay.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09ac.c).
+    evidence: L1
+  - name: areatableID_1
+    type: u32
+    notes: DBC column 3 (i); name 'areatableID_1' is AzerothCore's own DBCStructure.h struct member for WorldMapOverlay.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09ac.c).
+    evidence: L1
+  - name: areatableID_2
+    type: u32
+    notes: DBC column 4 (i); name 'areatableID_2' is AzerothCore's own DBCStructure.h struct member for WorldMapOverlay.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09ac.c).
+    evidence: L1
+  - name: areatableID_3
+    type: u32
+    notes: DBC column 5 (i); name 'areatableID_3' is AzerothCore's own DBCStructure.h struct member for WorldMapOverlay.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09ac.c).
+    evidence: L1
+  - name: unknown_6
+    type: u32
+    notes: 'DBC column 6 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/09ac.c). DBCStructure.h''s comment: ''always 0, possible part of areatableID[]''.'
+    evidence: L3
+  - name: unknown_7
+    type: u32
+    notes: 'DBC column 7 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/09ac.c). DBCStructure.h''s comment: ''always 0, possible part of areatableID[]''.'
+    evidence: L3
+  - name: unknown_8_str
+    type: lpstring
+    notes: 'DBC column 8 (string offset on disk, ''s''); the wire sends the VALUE inline as a length-prefixed string (lpstring = FUN_100d3680: u32 length then that many bytes, no NUL), not the 4-byte offset the .dbc file itself stores. DBCStructure.h does not keep a named member for this column, so unnamed; the lpstring''s presence, order and position are confirmed from the decompiled handler (build/ghidra/handlers-c/09ac.c). DBCStructure.h''s comment for this column reads ''internal_name'' but the line is commented out (not compiled), so that text is not used as the field name.'
+    evidence: L3
+  - name: unknown_9
+    type: u32
+    notes: 'DBC column 9 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/09ac.c). DBCStructure.h''s comment: ''some ints''.'
+    evidence: L3
+  - name: unknown_10
+    type: u32
+    notes: 'DBC column 10 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/09ac.c). DBCStructure.h''s comment: ''some ints''.'
+    evidence: L3
+  - name: unknown_11
+    type: u32
+    notes: 'DBC column 11 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/09ac.c). DBCStructure.h''s comment: ''some ints''.'
+    evidence: L3
+  - name: unknown_12
+    type: u32
+    notes: 'DBC column 12 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/09ac.c). DBCStructure.h''s comment: ''some ints''.'
+    evidence: L3
+  - name: unknown_13
+    type: u32
+    notes: 'DBC column 13 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/09ac.c). DBCStructure.h''s comment: ''some ints''.'
+    evidence: L3
+  - name: unknown_14
+    type: u32
+    notes: 'DBC column 14 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/09ac.c). DBCStructure.h''s comment: ''some ints''.'
+    evidence: L3
+  - name: unknown_15
+    type: u32
+    notes: 'DBC column 15 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/09ac.c). DBCStructure.h''s comment: ''some ints''.'
+    evidence: L3
+  - name: unknown_16
+    type: u32
+    notes: 'DBC column 16 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/09ac.c). DBCStructure.h''s comment: ''some ints''.'
+    evidence: L3
+# Read from the decompiled handler (build/ghidra/handlers-c/09ac.c), read by hand and cross-checked against src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa, 2026-09-20.
+
+client:
+  handler:
+    rva: "0x00234d00"
+    registration_site_rva: "0x002294ef"
+    evidence: L3
+
+provenance:
+  - level: L1
+    source: "src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa (AzerothCore's own column layout and struct-member names for WorldMapOverlay.dbc, read this session)"
+    claim: "the field names this fiche uses, and which columns AzerothCore keeps vs. skips"
+  - level: L3
+    source: "the decompiled handler (build/ghidra/handlers-c/09ac.c), read by hand and cross-checked against src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa, 2026-09-20"
+    claim: "the layout: widths, order, repeat structure and field names"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/handler-fire.yaml (decompiled read sequence)"
+    claim: "the read widths and their order, as decompiled"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/layouts.yaml (handler read sequence)"
+    claim: "the field widths and their order"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/opcodes.yaml (opcode-name switch)"
+    claim: "opcode 0x09ac is named SMSG_PATCH_WORLD_MAP_OVERLAY"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/handlers.yaml (handler registration scan)"
+    claim: "the client registers a handler for it"
+
+replay: null

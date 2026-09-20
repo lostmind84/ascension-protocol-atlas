@@ -1,0 +1,115 @@
+# Hand-written stub: the client's opcode table has no name for 0x0727 and, being a
+# client-to-server packet, it has no handler in Extensions.dll to infer one from. It
+# earns a fiche because the CoA server handles it -- see used_by_server.
+id: 0x0727
+name: CMSG_UNNAMED_0727   # PLACEHOLDER; the server module calls it the known-entries upload
+direction: client_to_server
+status: hypothetical
+evidence: L3
+client_builds:
+  - ascension-extensions-2026-08-13
+
+summary: >
+  Unnamed in the client's own opcode table. The CoA server module treats it as the
+  character-advancement known-entries upload (the client's complete wanted set after a
+  native learn or unlearn), and the server-side reader in mod-ascension-compat is the
+  only layout description that exists. Not verified against the client's sender.
+
+layout:
+  - name: count
+    type: u32
+    evidence: L3
+  - repeat: count
+    fields:
+    - name: entryId
+      type: u32
+      evidence: L3
+      notes: record +0x04
+    - name: rank
+      type: u32
+      evidence: L3
+      notes: record +0x08
+    - name: marker
+      type: u32
+      evidence: L3
+      notes: record +0x0c
+    - name: flag
+      type: u8
+      evidence: L3
+      notes: record +0x10, the lock byte
+    - name: tail
+      type: u64
+      evidence: L3
+      notes: 'Records +0x18 and +0x1c written as one 8-byte PutData; the same two u32 that SMSG 0x0726 calls buildTime and reserved. This makes the uploaded record 4 + 4 + 4 + 1 + 8 = 21 bytes, and the capture reference independently reports the SMSG record as 21 bytes with payload sizes of 4 + 21n. The client''s sender and the server''s reader and their capture therefore all describe the same record size, from three directions.
+
+        '
+# Read from the capture reference (CoinThrow, 2026-09-20, kept outside the tree -- see docs/crosscheck-cointhrow-2026-09-20.md). Only the tail note changed; every field keeps its L3.
+
+# width and order from the client's sender (CDataStore PutData sizes, decompiled; L3); names from the server's reader in mod-ascension-compat (L1)
+# client sender: FUN_101742c0 (ApplyPendingBuild) -> serializer FUN_10166a50, the mirror of 0x0726's deserializer
+# server reader: AscensionCoATalentState.cpp:97 ParseKnownEntriesUpload: u32 count, then RECORD_SIZE bytes per record; the same record as 0x0726
+used_by_server:   # the CoA server module sends or handles this
+  server_name: CMSG_CHARACTER_ADVANCEMENT_KNOWN_ENTRIES
+  files:
+    - modules/mod-ascension-compat/src/AscensionCompat.cpp
+
+client_binding:   # the Lua binding whose function sends this packet (client/symbols/ascension-extensions-2026-08-13/sender-bindings.yaml, L3) and the UI's calls (L2)
+  name: ApplyPendingBuild
+  function_rva: "0x001742c0"
+  calls:
+    - {file: "Interface/FrameXML/StaticPopup.lua", line: 544, args: []}
+    - {file: "Interface/FrameXML/StaticPopup.lua", line: 558, args: []}
+    - {file: "Interface/FrameXML/StaticPopup.lua", line: 572, args: []}
+    - {file: "Interface/FrameXML/StaticPopup.lua", line: 586, args: []}
+    - {file: "Interface/FrameXML/Util/CharacterAdvancementUtil.lua", line: 463, args: []}
+    - {file: "Interface/AddOns/Ascension_CharacterAdvancement/Templates/CASpellButton.lua", line: 869, args: []}
+
+provenance:
+  - level: L1
+    source: "the capture reference (CoinThrow, 2026-09-20, kept outside the tree -- see docs/crosscheck-cointhrow-2026-09-20.md)"
+    claim: "0x0727 is the client's complete wanted set after a native learn or unlearn, which the server validates, reprices and applies; its record is the 21-byte record of SMSG 0x0726"
+    note: >
+      This is the same reading the server module already had and the same record the
+      client's sender writes, so no field moved. Its value is the record SIZE: 21 bytes
+      is what our decompiled sender writes and what their wire bytes measure, which
+      closes the possibility of a seventh field this fiche has not seen. Their account
+      of the flow adds nothing our own summary did not already say, and we still have
+      not exercised the client's sender -- the L5 below is the SERVER's reader.
+  - level: L5
+    source: "tools/replay/ca_vertical.py --check upload, slot 1, 2026-09-19"
+    claim: >
+      THE SERVER'S READER, not the client's sender: a pksend of u32 1 then u32 31194, u32 1,
+      u32 1, u8 1, u32 0, u32 0 (a 21-byte record) is parsed -- the server answered
+      'Talent entry 31194 does not belong to your custom class.' and a fresh 0x0726 that
+      reached the native handler (ASCENSION_KNOWN_ENTRIES_UPDATED). Whether it applies an
+      accepted record is server policy, not measured.
+    note: "built with the client's own CreatePacket/Put*/Send through CoaProbe pksend; the client's sender was not exercised"
+  - level: L3
+    source: "tools/ghidra/ghidra.sh run Decomp.java <sender VA> + objdump of the push/call sequence (see client/client-senders.md)"
+    claim: "what the client writes, field widths and order"
+  - level: L1
+    source: "the server's reader (see client/client-senders.md)"
+    claim: "field names"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/opcodes.yaml (opcode-name switch)"
+    claim: "the client's table has no name for 0x0727"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/handlers.yaml (handler registration scan)"
+    claim: "no handler is registered for it, consistent with a client-to-server packet"
+  - level: L1
+    source: "azerothcore-wotlk-coa#4027 and mod-ascension-compat's reader"
+    claim: "record layout mirrors SMSG 0x0726's"
+
+open_questions:
+  - "Which client function sends it? The Lua binding ApplyPendingBuild (RVA 0x001742c0)
+     is the candidate per #4128, which reports the client-side validator refusing the
+     build before any 0x0727 leaves. Not examined here."
+
+replay:
+  script: tools/replay/ca_vertical.py
+  asserts:
+    - "the server parses a one-record upload and answers with its own complete 0x0726, which replaces a forged set"
+  asserts_measured:
+    - "entry 31194 refused as not of the character's class; ASCENSION_KNOWN_ENTRIES_UPDATED fired within the same second and a forged entry 6753 stopped being known"
+  last_run: { date: 2026-09-20, result: pass, build: coa-extensions-rev4-2026-09-14,
+              dataset: ascension-live-2026-09-17, slot: 1 }

@@ -1,0 +1,70 @@
+id: 0x099a
+name: SMSG_PATCH_AREA_GROUP
+direction: server_to_client
+status: hypothetical
+evidence: L1
+client_builds:
+  - ascension-extensions-2026-08-13
+
+summary: >
+  One row of AreaGroup.dbc: AreaGroupId, AreaId[0..5], nextGroup -- all eight columns kept and named by AzerothCore, no strings, no skips. A single straight-line read, 8 dwords (32B), matching the table exactly. Table binding is L1 (third-party reference only).
+
+layout:
+  - name: AreaGroupId
+    type: u32
+    notes: DBC column 0 (n); name 'AreaGroupId' is AzerothCore's own DBCStructure.h struct member for AreaGroup.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/099a.c).
+    evidence: L1
+  - name: AreaId_0
+    type: u32
+    notes: DBC column 1 (i); name 'AreaId_0' is AzerothCore's own DBCStructure.h struct member for AreaGroup.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/099a.c).
+    evidence: L1
+  - name: AreaId_1
+    type: u32
+    notes: DBC column 2 (i); name 'AreaId_1' is AzerothCore's own DBCStructure.h struct member for AreaGroup.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/099a.c).
+    evidence: L1
+  - name: AreaId_2
+    type: u32
+    notes: DBC column 3 (i); name 'AreaId_2' is AzerothCore's own DBCStructure.h struct member for AreaGroup.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/099a.c).
+    evidence: L1
+  - name: AreaId_3
+    type: u32
+    notes: DBC column 4 (i); name 'AreaId_3' is AzerothCore's own DBCStructure.h struct member for AreaGroup.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/099a.c).
+    evidence: L1
+  - name: AreaId_4
+    type: u32
+    notes: DBC column 5 (i); name 'AreaId_4' is AzerothCore's own DBCStructure.h struct member for AreaGroup.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/099a.c).
+    evidence: L1
+  - name: AreaId_5
+    type: u32
+    notes: DBC column 6 (i); name 'AreaId_5' is AzerothCore's own DBCStructure.h struct member for AreaGroup.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/099a.c).
+    evidence: L1
+  - name: nextGroup
+    type: u32
+    notes: DBC column 7 (i); name 'nextGroup' is AzerothCore's own DBCStructure.h struct member for AreaGroup.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/099a.c).
+    evidence: L1
+# Read from the decompiled handler (build/ghidra/handlers-c/099a.c), read by hand and cross-checked against src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa, 2026-09-20.
+
+client:
+  handler:
+    rva: "0x0022a270"
+    registration_site_rva: "0x002293d8"
+    evidence: L3
+
+provenance:
+  - level: L1
+    source: "src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa (AzerothCore's own column layout and struct-member names for AreaGroup.dbc, read this session)"
+    claim: "the field names this fiche uses, and which columns AzerothCore keeps vs. skips"
+  - level: L3
+    source: "the decompiled handler (build/ghidra/handlers-c/099a.c), read by hand and cross-checked against src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa, 2026-09-20"
+    claim: "the layout: widths, order, repeat structure and field names"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/handler-fire.yaml (decompiled read sequence)"
+    claim: "the read widths and their order, as decompiled"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/opcodes.yaml (opcode-name switch)"
+    claim: "opcode 0x099a is named SMSG_PATCH_AREA_GROUP"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/handlers.yaml (handler registration scan)"
+    claim: "the client registers a handler for it"
+
+replay: null

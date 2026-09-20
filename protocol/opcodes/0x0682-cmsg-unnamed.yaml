@@ -1,0 +1,34 @@
+# Hand-written from the decompiled Lua binding (see client/client-senders.md,
+# "The recovery service"). Regenerating the atlas leaves this file alone.
+id: 0x0682
+name: CMSG_UNNAMED_0682   # PLACEHOLDER: the client's table answers 'unknown'; the binding sends it
+direction: client_to_server
+status: hypothetical
+evidence: L3
+client_builds:
+  - ascension-extensions-2026-08-13
+
+summary: >
+  Sent by the Lua binding C_RecoveryService.QueryCategory (FUN_10306880) when the category
+  string maps to table index 6, RECOVERY_SERVICE_CATEGORY_WORLDFORGED_ITEM. Empty packet: the binding begins the packet
+  with FUN_1008d690(0x682) and sends at once. The reply the UI waits for is the matching
+  SMSG_RECOVERY_QUERY_*_RESPONSE.
+
+layout: []   # empty packet: FUN_1008d690(opcode) then send, nothing between
+# client sender: FUN_10306880 (Lua C_RecoveryService.QueryCategory), switch case 6 at
+#   0x10306936 (`mov eax,0x682`), jump table 0x103069f8
+used_by:   # UI source calling the binding
+  - Interface/AddOns/Ascension_HelpUI/HelpMenu/HelpMenuItemRecoveryPanelMixin.lua
+
+provenance:
+  - level: L3
+    source: "tools/ghidra/ghidra.sh run DecompAt.java 10306880 + objdump of the switch and its tail (client/client-senders.md)"
+    claim: "the opcode is selected by category and the packet is sent empty"
+  - level: L2
+    source: "corpus ascension-ui-patch-b-stock, HelpMenuItemRecoveryPanelMixin.lua:16-22 and SharedXML/Enum.lua:1592"
+    claim: "the UI passes the category string RECOVERY_SERVICE_CATEGORY_WORLDFORGED_ITEM"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/opcodes.yaml (opcode-name switch)"
+    claim: "the client's table has no name for 0x0682; the binding sends it for the WORLDFORGED_ITEM category"
+
+replay: null

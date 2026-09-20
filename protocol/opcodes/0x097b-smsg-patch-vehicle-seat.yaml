@@ -1,0 +1,270 @@
+id: 0x097b
+name: SMSG_PATCH_VEHICLE_SEAT
+direction: server_to_client
+status: hypothetical
+evidence: L1
+client_builds:
+  - ascension-extensions-2026-08-13
+
+summary: >
+  One row of VehicleSeat.dbc: 46 named dwords/floats (m_ID through m_flagsB, all kept by AzerothCore) then 12 unnamed trailing dwords ('added in 3.1, floats mostly', no comment). 58 dwords (232B), no strings -- a single verbatim loop copy in the handler, matching the table exactly. Table binding is L1 (third-party reference only).
+
+layout:
+  - name: m_ID
+    type: u32
+    notes: DBC column 0 (n); name 'm_ID' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_flags
+    type: u32
+    notes: DBC column 1 (i); name 'm_flags' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_attachmentID
+    type: u32
+    notes: DBC column 2 (i); name 'm_attachmentID' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_attachmentOffsetX
+    type: f32
+    notes: DBC column 3 (f); name 'm_attachmentOffsetX' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_attachmentOffsetY
+    type: f32
+    notes: DBC column 4 (f); name 'm_attachmentOffsetY' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_attachmentOffsetZ
+    type: f32
+    notes: DBC column 5 (f); name 'm_attachmentOffsetZ' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_enterPreDelay
+    type: f32
+    notes: DBC column 6 (f); name 'm_enterPreDelay' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_enterSpeed
+    type: f32
+    notes: DBC column 7 (f); name 'm_enterSpeed' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_enterGravity
+    type: f32
+    notes: DBC column 8 (f); name 'm_enterGravity' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_enterMinDuration
+    type: f32
+    notes: DBC column 9 (f); name 'm_enterMinDuration' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_enterMaxDuration
+    type: f32
+    notes: DBC column 10 (f); name 'm_enterMaxDuration' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_enterMinArcHeight
+    type: f32
+    notes: DBC column 11 (f); name 'm_enterMinArcHeight' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_enterMaxArcHeight
+    type: f32
+    notes: DBC column 12 (f); name 'm_enterMaxArcHeight' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_enterAnimStart
+    type: u32
+    notes: DBC column 13 (i); name 'm_enterAnimStart' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_enterAnimLoop
+    type: u32
+    notes: DBC column 14 (i); name 'm_enterAnimLoop' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_rideAnimStart
+    type: u32
+    notes: DBC column 15 (i); name 'm_rideAnimStart' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_rideAnimLoop
+    type: u32
+    notes: DBC column 16 (i); name 'm_rideAnimLoop' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_rideUpperAnimStart
+    type: u32
+    notes: DBC column 17 (i); name 'm_rideUpperAnimStart' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_rideUpperAnimLoop
+    type: u32
+    notes: DBC column 18 (i); name 'm_rideUpperAnimLoop' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_exitPreDelay
+    type: f32
+    notes: DBC column 19 (f); name 'm_exitPreDelay' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_exitSpeed
+    type: f32
+    notes: DBC column 20 (f); name 'm_exitSpeed' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_exitGravity
+    type: f32
+    notes: DBC column 21 (f); name 'm_exitGravity' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_exitMinDuration
+    type: f32
+    notes: DBC column 22 (f); name 'm_exitMinDuration' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_exitMaxDuration
+    type: f32
+    notes: DBC column 23 (f); name 'm_exitMaxDuration' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_exitMinArcHeight
+    type: f32
+    notes: DBC column 24 (f); name 'm_exitMinArcHeight' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_exitMaxArcHeight
+    type: f32
+    notes: DBC column 25 (f); name 'm_exitMaxArcHeight' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_exitAnimStart
+    type: u32
+    notes: DBC column 26 (i); name 'm_exitAnimStart' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_exitAnimLoop
+    type: u32
+    notes: DBC column 27 (i); name 'm_exitAnimLoop' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_exitAnimEnd
+    type: u32
+    notes: DBC column 28 (i); name 'm_exitAnimEnd' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_passengerYaw
+    type: f32
+    notes: DBC column 29 (f); name 'm_passengerYaw' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_passengerPitch
+    type: f32
+    notes: DBC column 30 (f); name 'm_passengerPitch' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_passengerRoll
+    type: f32
+    notes: DBC column 31 (f); name 'm_passengerRoll' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_passengerAttachmentID
+    type: u32
+    notes: DBC column 32 (i); name 'm_passengerAttachmentID' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_vehicleEnterAnim
+    type: u32
+    notes: DBC column 33 (i); name 'm_vehicleEnterAnim' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_vehicleExitAnim
+    type: u32
+    notes: DBC column 34 (i); name 'm_vehicleExitAnim' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_vehicleRideAnimLoop
+    type: u32
+    notes: DBC column 35 (i); name 'm_vehicleRideAnimLoop' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_vehicleEnterAnimBone
+    type: u32
+    notes: DBC column 36 (i); name 'm_vehicleEnterAnimBone' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_vehicleExitAnimBone
+    type: u32
+    notes: DBC column 37 (i); name 'm_vehicleExitAnimBone' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_vehicleRideAnimLoopBone
+    type: u32
+    notes: DBC column 38 (i); name 'm_vehicleRideAnimLoopBone' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_vehicleEnterAnimDelay
+    type: f32
+    notes: DBC column 39 (f); name 'm_vehicleEnterAnimDelay' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_vehicleExitAnimDelay
+    type: f32
+    notes: DBC column 40 (f); name 'm_vehicleExitAnimDelay' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_vehicleAbilityDisplay
+    type: u32
+    notes: DBC column 41 (i); name 'm_vehicleAbilityDisplay' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_enterUISoundID
+    type: u32
+    notes: DBC column 42 (i); name 'm_enterUISoundID' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_exitUISoundID
+    type: u32
+    notes: DBC column 43 (i); name 'm_exitUISoundID' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_uiSkin
+    type: u32
+    notes: DBC column 44 (i); name 'm_uiSkin' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: m_flagsB
+    type: u32
+    notes: DBC column 45 (i); name 'm_flagsB' is AzerothCore's own DBCStructure.h struct member for VehicleSeat.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L1
+  - name: unknown_46
+    type: u32
+    notes: DBC column 46 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L3
+  - name: unknown_47
+    type: u32
+    notes: DBC column 47 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L3
+  - name: unknown_48
+    type: u32
+    notes: DBC column 48 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L3
+  - name: unknown_49
+    type: u32
+    notes: DBC column 49 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L3
+  - name: unknown_50
+    type: u32
+    notes: DBC column 50 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L3
+  - name: unknown_51
+    type: u32
+    notes: DBC column 51 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L3
+  - name: unknown_52
+    type: u32
+    notes: DBC column 52 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L3
+  - name: unknown_53
+    type: u32
+    notes: DBC column 53 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L3
+  - name: unknown_54
+    type: u32
+    notes: DBC column 54 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L3
+  - name: unknown_55
+    type: u32
+    notes: DBC column 55 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L3
+  - name: unknown_56
+    type: u32
+    notes: DBC column 56 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L3
+  - name: unknown_57
+    type: u32
+    notes: DBC column 57 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/097b.c).
+    evidence: L3
+# Read from the decompiled handler (build/ghidra/handlers-c/097b.c), read by hand and cross-checked against src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa, 2026-09-20.
+
+client:
+  handler:
+    rva: "0x00234710"
+    registration_site_rva: "0x002291fe"
+    evidence: L3
+
+provenance:
+  - level: L1
+    source: "src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa (AzerothCore's own column layout and struct-member names for VehicleSeat.dbc, read this session)"
+    claim: "the field names this fiche uses, and which columns AzerothCore keeps vs. skips"
+  - level: L3
+    source: "the decompiled handler (build/ghidra/handlers-c/097b.c), read by hand and cross-checked against src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa, 2026-09-20"
+    claim: "the layout: widths, order, repeat structure and field names"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/handler-fire.yaml (decompiled read sequence)"
+    claim: "the read widths and their order, as decompiled"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/opcodes.yaml (opcode-name switch)"
+    claim: "opcode 0x097b is named SMSG_PATCH_VEHICLE_SEAT"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/handlers.yaml (handler registration scan)"
+    claim: "the client registers a handler for it"
+
+replay: null

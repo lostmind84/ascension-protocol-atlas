@@ -1,0 +1,73 @@
+id: 0x09a5
+name: SMSG_PATCH_TAXI_NODES
+direction: server_to_client
+status: hypothetical
+evidence: L1
+client_builds:
+  - ascension-extensions-2026-08-13
+
+summary: >
+  One row of TaxiNodes.dbc, collapsed: ID, map_id, x, y, z, then ONE string (the kept, named `name[16]` locale block, collapsed to its primary locale), then MountCreatureID[0..1] -- the string-flags dword (DBC column 21) is dropped entirely, not on the wire. 8 wire dwords (32B) plus one string, against the table's own 24 columns/96 bytes.
+
+layout:
+  - name: ID
+    type: u32
+    notes: DBC column 0 (n); name 'ID' is AzerothCore's own DBCStructure.h struct member for TaxiNodes.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a5.c).
+    evidence: L1
+  - name: map_id
+    type: u32
+    notes: DBC column 1 (i); name 'map_id' is AzerothCore's own DBCStructure.h struct member for TaxiNodes.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a5.c).
+    evidence: L1
+  - name: x
+    type: f32
+    notes: DBC column 2 (f); name 'x' is AzerothCore's own DBCStructure.h struct member for TaxiNodes.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a5.c).
+    evidence: L1
+  - name: y
+    type: f32
+    notes: DBC column 3 (f); name 'y' is AzerothCore's own DBCStructure.h struct member for TaxiNodes.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a5.c).
+    evidence: L1
+  - name: z
+    type: f32
+    notes: DBC column 4 (f); name 'z' is AzerothCore's own DBCStructure.h struct member for TaxiNodes.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a5.c).
+    evidence: L1
+  - name: name
+    type: lpstring
+    notes: 'DBC columns 5-20 (16 string-offset columns, ''s'') plus a flags dword at column 21 form AzerothCore''s kept struct member `name[16]` (L1). On the wire the whole 17-column locale block collapses to ONE length-prefixed string (the primary locale''s text) at this position; the other 15 locale slots and the flags dword (column 21) are not present on the wire at all -- confirmed from the decompiled handler (build/ghidra/handlers-c/09a5.c): the read cursor skips straight from the end of the fixed block to the lpstring with no placeholder dwords for this block.'
+    evidence: L3
+  - name: MountCreatureID_0
+    type: u32
+    notes: DBC column 23 (i); name 'MountCreatureID_0' is AzerothCore's own DBCStructure.h struct member for TaxiNodes.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a5.c).
+    evidence: L1
+  - name: MountCreatureID_1
+    type: u32
+    notes: DBC column 24 (i); name 'MountCreatureID_1' is AzerothCore's own DBCStructure.h struct member for TaxiNodes.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a5.c).
+    evidence: L1
+# Read from the decompiled handler (build/ghidra/handlers-c/09a5.c), read by hand and cross-checked against src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa, 2026-09-20.
+
+client:
+  handler:
+    rva: "0x00233960"
+    registration_site_rva: "0x00229483"
+    evidence: L3
+
+provenance:
+  - level: L1
+    source: "src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa (AzerothCore's own column layout and struct-member names for TaxiNodes.dbc, read this session)"
+    claim: "the field names this fiche uses, and which columns AzerothCore keeps vs. skips"
+  - level: L3
+    source: "the decompiled handler (build/ghidra/handlers-c/09a5.c), read by hand and cross-checked against src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa, 2026-09-20"
+    claim: "the layout: widths, order, repeat structure and field names"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/handler-fire.yaml (decompiled read sequence)"
+    claim: "the read widths and their order, as decompiled"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/layouts.yaml (handler read sequence)"
+    claim: "the field widths and their order"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/opcodes.yaml (opcode-name switch)"
+    claim: "opcode 0x09a5 is named SMSG_PATCH_TAXI_NODES"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/handlers.yaml (handler registration scan)"
+    claim: "the client registers a handler for it"
+
+replay: null

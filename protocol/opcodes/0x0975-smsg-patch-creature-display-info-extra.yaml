@@ -1,0 +1,125 @@
+id: 0x0975
+name: SMSG_PATCH_CREATURE_DISPLAY_INFO_EXTRA
+direction: server_to_client
+status: hypothetical
+evidence: L1
+client_builds:
+  - ascension-extensions-2026-08-13
+
+summary: >
+  One row of CreatureDisplayInfoExtra.dbc: id, DisplayRaceID (kept-named by AzerothCore), 18 more unnamed dwords, then one skipped-and-appended string (BakeName, unnamed -- the core comments it out). 20 dwords (80B) + a 4-byte skip = 84 bytes, matching the table's 21 columns exactly. The opcode is SMSG_PATCH_CREATURE_DISPLAY_INFO_EXTRA by the client's own opcode table, but patch-tables.yaml does not bind this handler to the CreatureDisplayInfoExtra.dbc object -- client/patch-table-names.md grades that binding L0 (name match only), so the table identity itself, not just the field names, is the fiche's weak point.
+
+layout:
+  - name: id
+    type: u32
+    notes: DBC column 0, format char 'd' (FT_SORT/FT_IND, the record's own index field per src/common/DataStores/DBCFileLoader.h); DBCStructure.h comments this column out (not a compiled struct member) but the format character itself conventionally marks it as the row's id, so named 'id' at L1; width/position confirmed from the decompiled handler (build/ghidra/handlers-c/0975.c).
+    evidence: L1
+  - name: DisplayRaceID
+    type: u32
+    notes: DBC column 1 (i); name 'DisplayRaceID' is AzerothCore's own DBCStructure.h struct member for CreatureDisplayInfoExtra.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/0975.c).
+    evidence: L1
+  - name: unknown_2
+    type: u32
+    notes: DBC column 2 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/0975.c).
+    evidence: L3
+  - name: unknown_3
+    type: u32
+    notes: DBC column 3 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/0975.c).
+    evidence: L3
+  - name: unknown_4
+    type: u32
+    notes: DBC column 4 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/0975.c).
+    evidence: L3
+  - name: unknown_5
+    type: u32
+    notes: DBC column 5 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/0975.c).
+    evidence: L3
+  - name: unknown_6
+    type: u32
+    notes: DBC column 6 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/0975.c).
+    evidence: L3
+  - name: unknown_7
+    type: u32
+    notes: DBC column 7 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/0975.c).
+    evidence: L3
+  - name: unknown_8
+    type: u32
+    notes: DBC column 8 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/0975.c).
+    evidence: L3
+  - name: unknown_9
+    type: u32
+    notes: DBC column 9 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/0975.c).
+    evidence: L3
+  - name: unknown_10
+    type: u32
+    notes: DBC column 10 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/0975.c).
+    evidence: L3
+  - name: unknown_11
+    type: u32
+    notes: DBC column 11 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/0975.c).
+    evidence: L3
+  - name: unknown_12
+    type: u32
+    notes: DBC column 12 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/0975.c).
+    evidence: L3
+  - name: unknown_13
+    type: u32
+    notes: DBC column 13 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/0975.c).
+    evidence: L3
+  - name: unknown_14
+    type: u32
+    notes: DBC column 14 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/0975.c).
+    evidence: L3
+  - name: unknown_15
+    type: u32
+    notes: DBC column 15 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/0975.c).
+    evidence: L3
+  - name: unknown_16
+    type: u32
+    notes: DBC column 16 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/0975.c).
+    evidence: L3
+  - name: unknown_17
+    type: u32
+    notes: DBC column 17 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/0975.c).
+    evidence: L3
+  - name: unknown_18
+    type: u32
+    notes: DBC column 18 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/0975.c).
+    evidence: L3
+  - name: unknown_19
+    type: u32
+    notes: DBC column 19 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/0975.c).
+    evidence: L3
+  - name: unknown_20_str
+    type: lpstring
+    notes: 'DBC column 20 (string offset on disk, ''s''); the wire sends the VALUE inline as a length-prefixed string (lpstring = FUN_100d3680: u32 length then that many bytes, no NUL), not the 4-byte offset the .dbc file itself stores. DBCStructure.h does not keep a named member for this column, so unnamed; the lpstring''s presence, order and position are confirmed from the decompiled handler (build/ghidra/handlers-c/0975.c). DBCStructure.h''s comment for this column reads ''BakeName'' but the line is commented out (not compiled), so that text is not used as the field name.'
+    evidence: L3
+# Read from the decompiled handler (build/ghidra/handlers-c/0975.c), read by hand and cross-checked against src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa, 2026-09-20.
+
+client:
+  handler:
+    rva: "0x0022af40"
+    registration_site_rva: "0x002291a1"
+    evidence: L3
+
+provenance:
+  - level: L1
+    source: "src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa (AzerothCore's own column layout and struct-member names for CreatureDisplayInfoExtra.dbc, read this session)"
+    claim: "the field names this fiche uses, and which columns AzerothCore keeps vs. skips"
+  - level: L3
+    source: "the decompiled handler (build/ghidra/handlers-c/0975.c), read by hand and cross-checked against src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa, 2026-09-20"
+    claim: "the layout: widths, order, repeat structure and field names"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/handler-fire.yaml (decompiled read sequence)"
+    claim: "the read widths and their order, as decompiled"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/layouts.yaml (handler read sequence)"
+    claim: "the field widths and their order"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/opcodes.yaml (opcode-name switch)"
+    claim: "opcode 0x0975 is named SMSG_PATCH_CREATURE_DISPLAY_INFO_EXTRA"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/handlers.yaml (handler registration scan)"
+    claim: "the client registers a handler for it"
+
+replay: null

@@ -1,0 +1,170 @@
+id: 0x09a4
+name: SMSG_PATCH_SKILL_TIERS
+direction: server_to_client
+status: hypothetical
+evidence: L1
+client_builds:
+  - ascension-extensions-2026-08-13
+
+summary: >
+  One row of SkillTiers.dbc: ID, then 16 unnamed dwords (Cost[0..15], commented out in DBCStructure.h), then 16 named dwords (Value[0..15], kept). No strings -- a single straight-line 33-dword (132B) copy, matching the table exactly.
+
+layout:
+  - name: ID
+    type: u32
+    notes: DBC column 0 (n); name 'ID' is AzerothCore's own DBCStructure.h struct member for SkillTiers.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a4.c).
+    evidence: L1
+  - name: unknown_1
+    type: u32
+    notes: DBC column 1 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/09a4.c).
+    evidence: L3
+  - name: unknown_2
+    type: u32
+    notes: DBC column 2 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/09a4.c).
+    evidence: L3
+  - name: unknown_3
+    type: u32
+    notes: DBC column 3 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/09a4.c).
+    evidence: L3
+  - name: unknown_4
+    type: u32
+    notes: DBC column 4 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/09a4.c).
+    evidence: L3
+  - name: unknown_5
+    type: u32
+    notes: DBC column 5 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/09a4.c).
+    evidence: L3
+  - name: unknown_6
+    type: u32
+    notes: DBC column 6 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/09a4.c).
+    evidence: L3
+  - name: unknown_7
+    type: u32
+    notes: DBC column 7 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/09a4.c).
+    evidence: L3
+  - name: unknown_8
+    type: u32
+    notes: DBC column 8 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/09a4.c).
+    evidence: L3
+  - name: unknown_9
+    type: u32
+    notes: DBC column 9 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/09a4.c).
+    evidence: L3
+  - name: unknown_10
+    type: u32
+    notes: DBC column 10 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/09a4.c).
+    evidence: L3
+  - name: unknown_11
+    type: u32
+    notes: DBC column 11 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/09a4.c).
+    evidence: L3
+  - name: unknown_12
+    type: u32
+    notes: DBC column 12 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/09a4.c).
+    evidence: L3
+  - name: unknown_13
+    type: u32
+    notes: DBC column 13 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/09a4.c).
+    evidence: L3
+  - name: unknown_14
+    type: u32
+    notes: DBC column 14 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/09a4.c).
+    evidence: L3
+  - name: unknown_15
+    type: u32
+    notes: DBC column 15 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/09a4.c).
+    evidence: L3
+  - name: unknown_16
+    type: u32
+    notes: DBC column 16 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/09a4.c).
+    evidence: L3
+  - name: Value_0
+    type: u32
+    notes: DBC column 17 (i); name 'Value_0' is AzerothCore's own DBCStructure.h struct member for SkillTiers.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a4.c).
+    evidence: L1
+  - name: Value_1
+    type: u32
+    notes: DBC column 18 (i); name 'Value_1' is AzerothCore's own DBCStructure.h struct member for SkillTiers.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a4.c).
+    evidence: L1
+  - name: Value_2
+    type: u32
+    notes: DBC column 19 (i); name 'Value_2' is AzerothCore's own DBCStructure.h struct member for SkillTiers.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a4.c).
+    evidence: L1
+  - name: Value_3
+    type: u32
+    notes: DBC column 20 (i); name 'Value_3' is AzerothCore's own DBCStructure.h struct member for SkillTiers.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a4.c).
+    evidence: L1
+  - name: Value_4
+    type: u32
+    notes: DBC column 21 (i); name 'Value_4' is AzerothCore's own DBCStructure.h struct member for SkillTiers.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a4.c).
+    evidence: L1
+  - name: Value_5
+    type: u32
+    notes: DBC column 22 (i); name 'Value_5' is AzerothCore's own DBCStructure.h struct member for SkillTiers.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a4.c).
+    evidence: L1
+  - name: Value_6
+    type: u32
+    notes: DBC column 23 (i); name 'Value_6' is AzerothCore's own DBCStructure.h struct member for SkillTiers.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a4.c).
+    evidence: L1
+  - name: Value_7
+    type: u32
+    notes: DBC column 24 (i); name 'Value_7' is AzerothCore's own DBCStructure.h struct member for SkillTiers.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a4.c).
+    evidence: L1
+  - name: Value_8
+    type: u32
+    notes: DBC column 25 (i); name 'Value_8' is AzerothCore's own DBCStructure.h struct member for SkillTiers.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a4.c).
+    evidence: L1
+  - name: Value_9
+    type: u32
+    notes: DBC column 26 (i); name 'Value_9' is AzerothCore's own DBCStructure.h struct member for SkillTiers.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a4.c).
+    evidence: L1
+  - name: Value_10
+    type: u32
+    notes: DBC column 27 (i); name 'Value_10' is AzerothCore's own DBCStructure.h struct member for SkillTiers.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a4.c).
+    evidence: L1
+  - name: Value_11
+    type: u32
+    notes: DBC column 28 (i); name 'Value_11' is AzerothCore's own DBCStructure.h struct member for SkillTiers.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a4.c).
+    evidence: L1
+  - name: Value_12
+    type: u32
+    notes: DBC column 29 (i); name 'Value_12' is AzerothCore's own DBCStructure.h struct member for SkillTiers.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a4.c).
+    evidence: L1
+  - name: Value_13
+    type: u32
+    notes: DBC column 30 (i); name 'Value_13' is AzerothCore's own DBCStructure.h struct member for SkillTiers.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a4.c).
+    evidence: L1
+  - name: Value_14
+    type: u32
+    notes: DBC column 31 (i); name 'Value_14' is AzerothCore's own DBCStructure.h struct member for SkillTiers.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a4.c).
+    evidence: L1
+  - name: Value_15
+    type: u32
+    notes: DBC column 32 (i); name 'Value_15' is AzerothCore's own DBCStructure.h struct member for SkillTiers.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09a4.c).
+    evidence: L1
+# Read from the decompiled handler (build/ghidra/handlers-c/09a4.c), read by hand and cross-checked against src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa, 2026-09-20.
+
+client:
+  handler:
+    rva: "0x00230690"
+    registration_site_rva: "0x00229474"
+    evidence: L3
+
+provenance:
+  - level: L1
+    source: "src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa (AzerothCore's own column layout and struct-member names for SkillTiers.dbc, read this session)"
+    claim: "the field names this fiche uses, and which columns AzerothCore keeps vs. skips"
+  - level: L3
+    source: "the decompiled handler (build/ghidra/handlers-c/09a4.c), read by hand and cross-checked against src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa, 2026-09-20"
+    claim: "the layout: widths, order, repeat structure and field names"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/handler-fire.yaml (decompiled read sequence)"
+    claim: "the read widths and their order, as decompiled"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/opcodes.yaml (opcode-name switch)"
+    claim: "opcode 0x09a4 is named SMSG_PATCH_SKILL_TIERS"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/handlers.yaml (handler registration scan)"
+    claim: "the client registers a handler for it"
+
+replay: null

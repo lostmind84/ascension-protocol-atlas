@@ -1,0 +1,77 @@
+# Binary builds. Every fact about code or memory names the build it holds for (ADR 0003).
+# Fields come from `python3 tools/extract/peinfo.py <file>`. Binaries are never committed.
+builds:
+  - id: ascension-extensions-2026-08-13
+    description: >
+      The stock Ascension Extensions.dll, kept in the lab client install as
+      `Extensions.dll.ORIGINAL`. This is the reference build: third-party addresses were
+      almost certainly read from a copy of it, and nothing of ours has touched it.
+    file: Extensions.dll
+    role: stock
+    sha256: 0f8d847b3adc44a963606f0cd4f7938ad6fcd6f4d87feac3131c7153bdf3bb11
+    bytes: 12643896
+    format: PE32
+    machine: i386
+    image_base: 0x10000000
+    size_of_image: 0xd76000
+    sections: 6
+    link_timestamp: "2026-08-13T16:53:10+00:00"
+    location: "/home/fab/CoaServer/client/ascension-live/Extensions.dll.ORIGINAL"
+    evidence: L3
+
+  - id: coa-extensions-rev4-2026-09-14
+    description: >
+      The Extensions.dll our lab client actually runs: the stock build with ten in-place
+      patches in `.text` and one appended `.local` section, shipped as CoA client patch
+      rev4 (`ability-fixes-20260914`). Section layout and every other section are
+      byte-identical to the stock build, so RVAs carry across — except at the ten patch
+      sites listed in the delta.
+    file: Extensions.dll
+    role: coa-patched
+    derived_from: ascension-extensions-2026-08-13
+    sha256: 9791801053f828d1ccdab1a4c17e64852d3ebe0fa708b91fa3674d0805d15bc8
+    bytes: 12644864
+    format: PE32
+    machine: i386
+    image_base: 0x10000000
+    size_of_image: 0xd77000
+    sections: 7
+    link_timestamp: "2026-08-13T16:53:10+00:00"
+    location: "/home/fab/CoaServer/client/ascension-live/Extensions.dll"
+    release: "CoA-Client-Patch rev4, releaseId ability-fixes-20260914"
+    delta: client/builds/coa-extensions-rev4-2026-09-14.delta.md
+    evidence: L3
+
+  - id: ascension-exe-2010-06-25-stock
+    description: >
+      Stock `Ascension.exe`, kept as `Ascension.exe.ORIGINAL`. Registered for
+      completeness; no atlas fact rests on it yet.
+    file: Ascension.exe
+    role: stock
+    sha256: 5b26e33b2129737af3a0c3164459f4c9b109398dab921f76c6740a8746fbb929
+    bytes: 7694848
+    format: PE32
+    machine: i386
+    image_base: 0x400000
+    size_of_image: 0x9fc000
+    sections: 6
+    link_timestamp: "2010-06-25T06:55:58+00:00"
+    location: "/home/fab/CoaServer/client/ascension-live/Ascension.exe.ORIGINAL"
+    evidence: L3
+
+  - id: coa-exe-rev4-2026-09-14
+    description: >
+      The `Ascension.exe` our lab client runs, from CoA client patch rev4.
+    file: Ascension.exe
+    role: coa-patched
+    derived_from: ascension-exe-2010-06-25-stock
+    sha256: f4b9f6fce448194638c5b1c751483090a48c597c6272237f31b3d151b50d3114
+    bytes: 7696384
+    format: PE32
+    machine: i386
+    image_base: 0x400000
+    size_of_image: 0x9fd000
+    sections: 7
+    link_timestamp: "2010-06-25T06:55:58+00:00"
+    location: "/home/fab/CoaServer/client/ascension-live/Ascension.exe"
+    evidence: L3

@@ -1,0 +1,72 @@
+# Hand-investigated, 2026-09-20: the client registers no handler for this opcode in this
+# build, so there is no code to read a layout from. Regenerating the atlas leaves this
+# file alone (tools/codegen/stub_fiches.py never overwrites an existing fiche).
+id: 0x0922
+name: SMSG_PGF_GROUP_DECLINE_APPLICANT_RESPONSE
+direction: server_to_client
+status: unknown
+evidence: L3
+client_builds:
+  - ascension-extensions-2026-08-13
+
+summary: >
+  Named SMSG_PGF_GROUP_DECLINE_APPLICANT_RESPONSE by the client's own opcode table. Extensions.dll's handler-registration
+  table -- an exhaustive scan of .text for the push-handler/push-opcode/call-register
+  idiom that recovers all 532 handlers this build registers -- has no entry for
+  0x0922, and none of the PGF (player group finder) request/response cluster
+  (0x0533-0x053A, 0x091A-0x0924) has one either. This build has no code that reads the
+  packet: layout is not established and cannot be inferred from the name.
+
+layout: []   # unknown -- no handler to read a payload from; see provenance
+
+provenance:
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/opcodes.yaml (opcode-name switch)"
+    claim: "opcode 0x0922 is named SMSG_PGF_GROUP_DECLINE_APPLICANT_RESPONSE"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/handlers.yaml (registration scan, tools/extract/opcode_handlers.py, byte-pattern scan of Extensions.dll's whole .text section for the push handler/push opcode/call register idiom)"
+    claim: "Extensions.dll registers no handler for 0x0922 in this build"
+    note: >
+      The scan recovers all 532 registrations the client's three registrar call sites make
+      (registrars: 0x002c4590 x361, 0x002cfeb0 x169, 0x00278530 x2); 0x0922 is not among them,
+      and neither is any opcode in the PGF request/response cluster (0x0533-0x053A,
+      0x091A-0x0924). Checked independently here: a raw scan for the bare 32-bit immediate
+      0x0922 anywhere in the image turns up at most a handful of hits, and where it does, each
+      one sits inside a table of (dword, dword) records in .rdata (file offset
+      0xb62418-0xb625f0) whose second dword is one of six addresses at the very start of .text
+      (0x10001720, 0x10001900, 0x10001a30, 0x10001b00, 0x10001b60, 0x10001bc0). Decompiled this
+      session (GHIDRA_WORKSPACE=verify-social-b, DecompAt.java): FUN_10001720 is an x86
+      instruction-length decoder (reads a byte, looks its length up via a table at DAT_10b62d20,
+      memcpy's that many bytes); the other five are thin wrappers that plant literal x86
+      opcode/ModRM byte pairs (e.g. 0x52f6, 0x66f7, 0x52ff) on the stack before calling it. This
+      is a hooking/detour helper's x86-length-decode table, not the crash-reporter's string pool
+      the previous pass named: the 'Registers:'/'ACCESS_VIOLATION' strings are a different,
+      unrelated .rdata region about 0x3fd0 bytes away (file offset 0xb5e42e), not adjacent to
+      these hits -- corrected here, see provenance. A Ghidra cross-reference check (Refs.java,
+      re-run independently this session) of this opcode's own entry in that table finds zero
+      direct references to it from any function -- though a computed/indexed table read would
+      not surface as a per-element xref either way. The decisive point is the table's own key
+      range: it runs from near 0 past 0x21d8a and 0x4212e0 -- far outside any plausible 16-bit
+      opcode value -- which rules it out as an opcode dispatch table on its own terms,
+      independent of the xref check.
+  - level: L1
+    source: >
+      the capture reference (kept outside this repository at
+      ~/CoaServer/reference/cointhrow/cointhrow-opcode-dbc-reference-2026-09-20.md), the row
+      "0x0533-053A, 091A-0924 | CMSG/SMSG | PGF (Ascension player group finder): enlist/delist/applicants cluster + response cluster"
+    claim: "no senders or handlers present in this build (server/module-side only)"
+    note: >
+      Independently reaches the same conclusion as our own registration scan, for the whole PGF
+      cluster this opcode belongs to. L1 per docs/EVIDENCE.md. Their parenthetical
+      "(server/module-side only)" is their own inference, not something we confirmed: our own
+      search of azerothcore-wotlk-coa (including modules/mod-ascension-compat) finds no reference
+      to 0x0922, or to any opcode in this cluster, anywhere in the fork.
+
+open_questions:
+  - "Does any other Ascension client build register a handler for 0x0922? Not
+     established here: this fiche covers one build (ascension-extensions-2026-08-13) only."
+  - "SMSG_PGF_GROUP_DECLINE_APPLICANT_RESPONSE's payload, if the feature is ever wired up client-side, is unknown.
+     Nothing here should be used to guess it -- see AGENTS.md rule 4."
+  - "0x091B-0x091E (SMSG_PGF_APPLICANT_LIST_RESPONSE/DECLINE/APPLIED/REVOKED) sit inside the same numeric run and are named by the same table; they belong to a different agent's opcode set in this pass and are not touched here."
+
+replay: null

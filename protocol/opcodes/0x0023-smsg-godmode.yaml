@@ -1,0 +1,156 @@
+# Hand-written, 2026-09-20. Regenerating the atlas leaves this file alone.
+# This is the first fiche in the tree for a number AzerothCore already defines. ADR 0005
+# allows exactly one reason for that -- Ascension putting something else on a standard
+# number -- and requires it to be stated rather than implied, hence
+# `reuses_standard_opcode: true` below. The payload claim is a third party's and is L1;
+# what is ours is the check that the client does not carry these lists itself.
+id: 0x0023
+name: SMSG_GODMODE   # the client's own table name, inherited from the standard enum. The
+                     # content reported on this number is not a god-mode toggle.
+direction: server_to_client
+status: hypothetical
+evidence: L1
+reuses_standard_opcode: true
+client_builds:
+  - ascension-extensions-2026-08-13
+
+summary: >
+  AzerothCore defines 0x0023 as SMSG_GODMODE and declares it STATUS_NEVER -- the core
+  never sends it -- and Ascension's client keeps the same inherited name in its opcode
+  table. A third-party capture of a live Ascension session reports the realm using the
+  number for something else entirely: three length-prefixed string lists, 79 entries in
+  all, that read as an anti-cheat detector signature set (process and module names, short
+  file tokens, window-title fragments). The name in the table therefore says nothing
+  about the content. Our own contribution is negative and re-derivable: none of the
+  reported signature strings exists in the stock client binaries, so a list like this
+  cannot be compiled in and has to arrive at runtime, which is consistent with a packet
+  carrying it. That does not prove the packet is this one. The client's own anti-cheat
+  reports go back the other way on CMSG_ANTICHEAT_ALERT (0x051f) and
+  CMSG_ANTICHEAT_VERSION (0x0520).
+
+layout:   # the capture reference's reading. L1 throughout: the capture is not shared and
+          # no client-side reader for this opcode has been located, so nothing here is
+          # re-derivable today (docs/EVIDENCE.md).
+  - name: count_1
+    type: u32
+    evidence: L1
+    notes: >
+      The capture reference reports 34, and calls block 1 a process/module signature list
+      (WRobot, Honorbuddy, PocketGnome, cheatengine ... ).
+  - repeat: count_1
+    fields:
+      - name: entry_1
+        type: lpstring
+        evidence: L1
+        notes: >
+          The capture reference reports {u32 len; len bytes} with the length COUNTING the
+          terminating NUL. That is not the client's usual lpstring helper (FUN_100d3680:
+          u32 length then that many bytes, no NUL), and no reader for this opcode has
+          been found, so the NUL claim is unchecked here.
+  - name: count_2
+    type: u32
+    evidence: L1
+    notes: >
+      The capture reference reports 6, block 2 being short file/module tokens (scout,
+      Luim, WPESPY, EWT, RPE, MPQLISTGEN).
+  - repeat: count_2
+    fields:
+      - name: entry_2
+        type: lpstring
+        evidence: L1
+        notes: "Same encoding as block 1, per the capture reference."
+  - name: count_3
+    type: u32
+    evidence: L1
+    notes: >
+      The capture reference reports 39, block 3 being window-title fragments -- mostly the
+      block 1 tools in caption form, plus five bare tool-version strings.
+  - repeat: count_3
+    fields:
+      - name: entry_3
+        type: lpstring
+        evidence: L1
+        notes: "Same encoding as block 1, per the capture reference."
+
+provenance:
+  - level: L1
+    source: >
+      CoinThrow's capture reference, kept outside this repository at
+      ~/CoaServer/reference/cointhrow/cointhrow-opcode-dbc-reference-2026-09-20.md,
+      section "0x0023 - anti-cheat signature lists"
+    claim: >
+      A 1,301-byte server-to-client payload at t+10.489 holding three blocks of
+      {u32 count; count x {u32 len; bytes}}, 34 + 6 + 39 entries, and that the parse
+      consumes 1,301 of 1,301 bytes.
+    note: >
+      L1 per docs/EVIDENCE.md: a live session (an Ascension 3.3.5a client, build 12344)
+      the author reports but does not share. Their arithmetic was re-added here from the
+      79 entries they print: 12 bytes of counts plus sum(4 + len + 1) over the entries as
+      printed = 1,301 exactly. That makes the reading internally consistent and rules out
+      the obvious failure mode of a false parse over other bytes -- the same document
+      retracts three other "frames" for being exactly that. It is a consistency check on
+      their data, not an independent measurement, so the grade does not move.
+  - level: L3
+    source: >
+      byte search of the stock binaries -- Extensions.dll.ORIGINAL (sha256
+      0f8d847b3adc44a963606f0cd4f7938ad6fcd6f4d87feac3131c7153bdf3bb11, the registered
+      build) and Ascension.exe.ORIGINAL (sha256
+      5b26e33b2129737af3a0c3164459f4c9b109398dab921f76c6740a8746fbb929) -- for the
+      reported signature strings, ASCII and UTF-16LE, 2026-09-20
+    claim: >
+      None of WRobot, Honorbuddy, PocketGnome, MPQLISTGEN, AmeisenBotX, DetourLoader,
+      AutoHotkey, cheatengine, ISBoxer, "WoW Admin Panel", "Zzuks Fisher" or
+      "Tanaris Heat" occurs in either image: the detector list is not compiled into the
+      client and must reach it at runtime.
+    note: >
+      An absence, so there is no RVA to record; the method is a plain byte search, not a
+      disassembly. Extensions.dll has an unexamined high-entropy `.vm_sec` blob
+      (client/symbols/.../anticheat.md), so an obfuscated copy cannot be excluded. This
+      corroborates that SOME packet carries the lists; it does not identify the opcode.
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/opcodes.yaml (opcode-name switch)"
+    claim: "the client's own table names 0x0023 SMSG_GODMODE"
+    note: >
+      Byte-for-byte the name AzerothCore uses (protocol/known-baseline.yaml), i.e. the
+      inherited standard enum. It is evidence about the table, not about the payload.
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/handlers.yaml (handler registration scan)"
+    claim: "Extensions.dll registers no handler for 0x0023"
+    note: >
+      Weak on purpose: the scan covers Extensions.dll only and the standard opcodes are
+      dispatched by Ascension.exe (client/symbols/.../handlers.md), so this says nothing
+      about whether the client consumes the packet. Locating the reader in the EXE is the
+      one thing that would lift this fiche off L1.
+  - level: L3
+    source: >
+      tools/extract/client_sender.py ~/CoaServer/client/ascension-live/Extensions.dll.ORIGINAL
+      --build ascension-extensions-2026-08-13 --only 0x0023 (run 2026-09-20)
+    claim: "no push-site sender for 0x0023 in Extensions.dll"
+    note: "Consistent with server-to-client, which is also what the standard name implies."
+  - level: L1
+    source: "azerothcore-wotlk-coa src/server/game/Server/Protocol/Opcodes.cpp:166 and Opcodes.h:65"
+    claim: >
+      The core defines SMSG_GODMODE = 0x023 with STATUS_NEVER, so nothing in the standard
+      server ever sends this opcode; the number is free in practice.
+    note: >
+      Read from the core checkout on 2026-09-20. Graded L1 as another project's source
+      (docs/EVIDENCE.md), the same grade the reference fiche 0x0725 gives the fork's own
+      serializer.
+
+replay: null
+
+open_questions:
+  - "Where does the client read this packet? Nothing in Extensions.dll registers 0x0023,
+     so the reader -- if there is one -- is in Ascension.exe. Finding it would put the
+     three-block layout at L3 in one pass and is the natural next step."
+  - "Do the runtime lists feed the detection loop at FUN_10a3d130, whose detectors report
+     through FUN_100b5570 / CMSG_ANTICHEAT_ALERT (client/symbols/.../anticheat.md)?
+     Nothing read so far connects the two."
+  - "Is the third block really matched against window captions, as the capture reference
+     says, or is that an inference from its contents?"
+  - "Does the length field include the NUL, as reported? The client's usual lpstring
+     helper does not."
+
+related:
+  - 0x051f
+  - 0x0520

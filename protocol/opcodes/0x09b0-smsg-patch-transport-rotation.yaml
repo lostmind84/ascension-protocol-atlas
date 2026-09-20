@@ -1,0 +1,66 @@
+id: 0x09b0
+name: SMSG_PATCH_TRANSPORT_ROTATION
+direction: server_to_client
+status: hypothetical
+evidence: L1
+client_builds:
+  - ascension-extensions-2026-08-13
+
+summary: >
+  One row of TransportRotation.dbc: an id (FT_SORT index column, conventional name), TransportEntry, TimeSeg, X, Y, Z, W -- all seven columns named. No strings. 7 dwords (28B), matching the table exactly.
+
+layout:
+  - name: id
+    type: u32
+    notes: DBC column 0, format char 'd' (FT_SORT/FT_IND, the record's own index field per src/common/DataStores/DBCFileLoader.h); DBCStructure.h comments this column out (not a compiled struct member) but the format character itself conventionally marks it as the row's id, so named 'id' at L1; width/position confirmed from the decompiled handler (build/ghidra/handlers-c/09b0.c).
+    evidence: L1
+  - name: TransportEntry
+    type: u32
+    notes: DBC column 1 (i); name 'TransportEntry' is AzerothCore's own DBCStructure.h struct member for TransportRotation.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09b0.c).
+    evidence: L1
+  - name: TimeSeg
+    type: u32
+    notes: DBC column 2 (i); name 'TimeSeg' is AzerothCore's own DBCStructure.h struct member for TransportRotation.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09b0.c).
+    evidence: L1
+  - name: X
+    type: f32
+    notes: DBC column 3 (f); name 'X' is AzerothCore's own DBCStructure.h struct member for TransportRotation.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09b0.c).
+    evidence: L1
+  - name: Y
+    type: f32
+    notes: DBC column 4 (f); name 'Y' is AzerothCore's own DBCStructure.h struct member for TransportRotation.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09b0.c).
+    evidence: L1
+  - name: Z
+    type: f32
+    notes: DBC column 5 (f); name 'Z' is AzerothCore's own DBCStructure.h struct member for TransportRotation.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09b0.c).
+    evidence: L1
+  - name: W
+    type: f32
+    notes: DBC column 6 (f); name 'W' is AzerothCore's own DBCStructure.h struct member for TransportRotation.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/09b0.c).
+    evidence: L1
+# Read from the decompiled handler (build/ghidra/handlers-c/09b0.c), read by hand and cross-checked against src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa, 2026-09-20.
+
+client:
+  handler:
+    rva: "0x00233e40"
+    registration_site_rva: "0x0022952b"
+    evidence: L3
+
+provenance:
+  - level: L1
+    source: "src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa (AzerothCore's own column layout and struct-member names for TransportRotation.dbc, read this session)"
+    claim: "the field names this fiche uses, and which columns AzerothCore keeps vs. skips"
+  - level: L3
+    source: "the decompiled handler (build/ghidra/handlers-c/09b0.c), read by hand and cross-checked against src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa, 2026-09-20"
+    claim: "the layout: widths, order, repeat structure and field names"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/handler-fire.yaml (decompiled read sequence)"
+    claim: "the read widths and their order, as decompiled"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/opcodes.yaml (opcode-name switch)"
+    claim: "opcode 0x09b0 is named SMSG_PATCH_TRANSPORT_ROTATION"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/handlers.yaml (handler registration scan)"
+    claim: "the client registers a handler for it"
+
+replay: null

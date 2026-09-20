@@ -1,0 +1,105 @@
+id: 0x0995
+name: SMSG_PATCH_BATTLEMASTER_LIST
+direction: server_to_client
+status: hypothetical
+evidence: L1
+client_builds:
+  - ascension-extensions-2026-08-13
+
+summary: >
+  One row of BattlemasterList.dbc, in the collapsed form the wire actually sends: id, mapid[0..7], type, an unnamed dword (canJoinAsGroup), then ONE string (the kept, named `name[16]` locale block, collapsed to its primary locale -- the other 15 locale slots and the nameFlags dword are not on the wire at all, confirmed from the decompiled handler), then maxGroupSize, HolidayWorldStateId, and two unnamed trailing dwords (MinLevel, SomeLevel). 16 wire dwords (64B) plus one string -- half the table's own 32-column/128-byte record, because the whole 17-column locale block plus its flag collapse to one wire slot and the flag itself is dropped. Table binding is L1 (third-party reference only).
+
+layout:
+  - name: id
+    type: u32
+    notes: DBC column 0 (n); name 'id' is AzerothCore's own DBCStructure.h struct member for BattlemasterList.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/0995.c).
+    evidence: L1
+  - name: mapid_0
+    type: u32
+    notes: DBC column 1 (i); name 'mapid_0' is AzerothCore's own DBCStructure.h struct member for BattlemasterList.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/0995.c).
+    evidence: L1
+  - name: mapid_1
+    type: u32
+    notes: DBC column 2 (i); name 'mapid_1' is AzerothCore's own DBCStructure.h struct member for BattlemasterList.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/0995.c).
+    evidence: L1
+  - name: mapid_2
+    type: u32
+    notes: DBC column 3 (i); name 'mapid_2' is AzerothCore's own DBCStructure.h struct member for BattlemasterList.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/0995.c).
+    evidence: L1
+  - name: mapid_3
+    type: u32
+    notes: DBC column 4 (i); name 'mapid_3' is AzerothCore's own DBCStructure.h struct member for BattlemasterList.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/0995.c).
+    evidence: L1
+  - name: mapid_4
+    type: u32
+    notes: DBC column 5 (i); name 'mapid_4' is AzerothCore's own DBCStructure.h struct member for BattlemasterList.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/0995.c).
+    evidence: L1
+  - name: mapid_5
+    type: u32
+    notes: DBC column 6 (i); name 'mapid_5' is AzerothCore's own DBCStructure.h struct member for BattlemasterList.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/0995.c).
+    evidence: L1
+  - name: mapid_6
+    type: u32
+    notes: DBC column 7 (i); name 'mapid_6' is AzerothCore's own DBCStructure.h struct member for BattlemasterList.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/0995.c).
+    evidence: L1
+  - name: mapid_7
+    type: u32
+    notes: DBC column 8 (i); name 'mapid_7' is AzerothCore's own DBCStructure.h struct member for BattlemasterList.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/0995.c).
+    evidence: L1
+  - name: type
+    type: u32
+    notes: DBC column 9 (i); name 'type' is AzerothCore's own DBCStructure.h struct member for BattlemasterList.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/0995.c).
+    evidence: L1
+  - name: unknown_10
+    type: u32
+    notes: DBC column 10 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/0995.c). DBCStructure.h's comment calls this canJoinAsGroup (0 or 1).
+    evidence: L3
+  - name: name
+    type: lpstring
+    notes: 'DBC columns 11-26 (16 string-offset columns, ''s'') plus a flags dword at column 27 form AzerothCore''s kept struct member `name[16]` (L1). On the wire the whole 17-column locale block collapses to ONE length-prefixed string (the primary locale''s text) at this position; the other 15 locale slots and the flags dword (column 27) are not present on the wire at all -- confirmed from the decompiled handler (build/ghidra/handlers-c/0995.c): the read cursor skips straight from the end of the fixed block to the lpstring with no placeholder dwords for this block.'
+    evidence: L3
+  - name: maxGroupSize
+    type: u32
+    notes: DBC column 28 (i); name 'maxGroupSize' is AzerothCore's own DBCStructure.h struct member for BattlemasterList.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/0995.c).
+    evidence: L1
+  - name: HolidayWorldStateId
+    type: u32
+    notes: DBC column 29 (i); name 'HolidayWorldStateId' is AzerothCore's own DBCStructure.h struct member for BattlemasterList.dbc (L1, another project's reading of the same client DBC file, not corroborated by client Lua); width/position independently confirmed from the decompiled handler (build/ghidra/handlers-c/0995.c).
+    evidence: L1
+  - name: unknown_30
+    type: u32
+    notes: DBC column 30 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/0995.c). DBCStructure.h's comment calls this MinLevel.
+    evidence: L3
+  - name: unknown_31
+    type: u32
+    notes: DBC column 31 (x); DBCfmt.h/DBCStructure.h in azerothcore-wotlk-coa does not keep this column as a named struct member, so no name is asserted here (unnamed placeholder); width/position from our own read of the decompiled handler (build/ghidra/handlers-c/0995.c). DBCStructure.h's comment calls this SomeLevel, 'may be max level'.
+    evidence: L3
+# Read from the decompiled handler (build/ghidra/handlers-c/0995.c), read by hand and cross-checked against src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa, 2026-09-20.
+
+client:
+  handler:
+    rva: "0x0022a830"
+    registration_site_rva: "0x0022938d"
+    evidence: L3
+
+provenance:
+  - level: L1
+    source: "src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa (AzerothCore's own column layout and struct-member names for BattlemasterList.dbc, read this session)"
+    claim: "the field names this fiche uses, and which columns AzerothCore keeps vs. skips"
+  - level: L3
+    source: "the decompiled handler (build/ghidra/handlers-c/0995.c), read by hand and cross-checked against src/server/shared/DataStores/DBCfmt.h and DBCStructure.h in azerothcore-wotlk-coa, 2026-09-20"
+    claim: "the layout: widths, order, repeat structure and field names"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/handler-fire.yaml (decompiled read sequence)"
+    claim: "the read widths and their order, as decompiled"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/layouts.yaml (handler read sequence)"
+    claim: "the field widths and their order"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/opcodes.yaml (opcode-name switch)"
+    claim: "opcode 0x0995 is named SMSG_PATCH_BATTLEMASTER_LIST"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/handlers.yaml (handler registration scan)"
+    claim: "the client registers a handler for it"
+
+replay: null

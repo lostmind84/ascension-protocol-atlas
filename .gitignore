@@ -1,0 +1,22 @@
+# Generated artifacts
+build/
+*.pyc
+__pycache__/
+
+# Local lab state
+.env
+*.local.yaml
+
+# Never commit game assets — CI also rejects these
+*.mpq
+*.MPQ
+*.dbc
+*.DBC
+*.dll
+*.DLL
+*.exe
+*.EXE
+
+# agent working notes: findings belong in fiches and readings, not in reports
+.agents/
+build/ghidra-*

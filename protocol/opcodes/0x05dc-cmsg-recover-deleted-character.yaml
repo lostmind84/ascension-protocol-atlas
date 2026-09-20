@@ -1,0 +1,44 @@
+# Hand-written from the decompiled Lua binding (see client/client-senders.md,
+# "The recovery service"). Regenerating the atlas leaves this file alone.
+id: 0x05dc
+name: CMSG_RECOVER_DELETED_CHARACTER
+direction: client_to_server
+status: hypothetical
+evidence: L3
+client_builds:
+  - ascension-extensions-2026-08-13
+
+summary: >
+  Sent by the Lua binding C_RecoveryService.RecoverCategoryItemAtIndex(category, index, id)
+  (FUN_10306a10) when the category string maps to table index 2, RECOVERY_SERVICE_CATEGORY_DELETED_CHARACTER. Two fields: a u32
+  position and the id string, NUL-terminated. The position is the index of the entry in
+  the client's cached list for the category (the binding turns the Lua index into it
+  through a lookup in that list and refuses the call when the entry is not found).
+
+layout:
+  - name: position
+    type: u32
+    evidence: L3
+  - name: id
+    type: cstring
+    evidence: L3
+# client sender: FUN_10306a10 (Lua C_RecoveryService.RecoverCategoryItemAtIndex), switch case 2 at
+#   0x10306c94 (`mov eax,0x5dc`), jump table 0x10306e2c; shared tail 0x10306cb5:
+#   FUN_1008d690(opcode); PutData(&position, 4); PutData(id, strlen(id) + 1); send via FUN_1008e4c0.
+# `position` is what the client computed, not the Lua index; how it is derived from the
+# Lua arguments is read only as far as the std::find above -- see client/client-senders.md.
+used_by:   # UI source calling the binding
+  - Interface/AddOns/Ascension_HelpUI/HelpMenu/RecoveryItemMixin.lua
+
+provenance:
+  - level: L3
+    source: "tools/ghidra/ghidra.sh run DecompAt.java 10306880 + objdump 0x10306c8d-0x10306d3f (client/client-senders.md)"
+    claim: "the opcode is selected by category; the payload is one u32 then a NUL-terminated string"
+  - level: L2
+    source: "corpus ascension-ui-patch-b-stock, RecoveryItemMixin.lua:135-210 and HelpMenuItemRecoveryPanelMixin.lua:16-22"
+    claim: "the UI passes the category string RECOVERY_SERVICE_CATEGORY_DELETED_CHARACTER, an index and item.Id"
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/opcodes.yaml (opcode-name switch)"
+    claim: "opcode 0x05dc is named CMSG_RECOVER_DELETED_CHARACTER"
+
+replay: null

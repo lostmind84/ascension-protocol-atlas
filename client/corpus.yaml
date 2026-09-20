@@ -1,0 +1,28 @@
+# UI source corpora: the client's own Lua, XML and TOC, extracted so it can be searched.
+# Referenced, not vendored (ADR 0006): the files live under build/corpus/<id>/, outside
+# version control; only the manifest is committed.
+#
+#   python3 tools/extract/extract_ui.py --id <id> --out build/corpus/<id> \
+#       --manifest client/corpus/<id>.manifest.yaml <archive.MPQ> [...]
+corpora:
+  - id: ascension-ui-patch-b-stock
+    description: >
+      Ascension's custom interface source, from the stock `patch-B.MPQ` kept in the lab
+      client as `patch-B.MPQ.ORIGINAL`. 1 233 files (823 Lua), 19 MB extracted.
+    archives:
+      - "/home/fab/CoaServer/client/ascension-live/Data/patch-B.MPQ.ORIGINAL"
+    extracted_to: build/corpus/ascension-ui-patch-b-stock
+    manifest: client/corpus/ascension-ui-patch-b-stock.manifest.yaml
+    evidence: L2
+    notes: >
+      Scoped to Ascension's own UI on purpose (ADR 0005). Of the client's archives, only
+      patch-B carries a meaningful amount of interface source: 1 318 files in the CoA-
+      patched copy, 1 233 in the stock one. `patch-X.MPQ` carries a single file. The
+      `enUS/locale-enUS.MPQ` and `enUS/patch-enUS*.MPQ` archives carry roughly 1 100 more,
+      but those are Blizzard's stock 3.3.5a FrameXML, which is public and not this
+      project's subject.
+    open_questions:
+      - "Do the enUS patch archives override any Ascension file? Not checked; if they do,
+         the corpus for those paths is incomplete."
+      - "Register the CoA-patched patch-B as a second corpus so our own UI changes can be
+         diffed against stock."

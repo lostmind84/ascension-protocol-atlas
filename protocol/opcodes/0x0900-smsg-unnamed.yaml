@@ -1,0 +1,117 @@
+# Hand-written, 2026-09-20. Regenerating the atlas leaves this file alone.
+# tools/codegen/stub_fiches.py deliberately skips unnamed opcodes that have no handler --
+# there are 458 of them and a name-less, code-less slot says nothing -- which is why this
+# number had no fiche. What earns it one is that two independent parties put traffic on
+# it: a third party's live capture of the real realm, and azerothcore-wotlk-coa#4128.
+# Everything about the payload below is theirs, graded L1, and unreproduced here.
+id: 0x0900
+name: SMSG_UNNAMED_0900   # PLACEHOLDER: the client's own table answers 'unknown'; no handler either
+direction: server_to_client
+status: hypothetical
+evidence: L1
+client_builds:
+  - ascension-extensions-2026-08-13
+
+summary: >
+  Unnamed in the client's own opcode table and with no handler registration in
+  Extensions.dll: on this build the client drops whatever arrives here
+  (client/symbols/ascension-extensions-2026-08-13/handlers.md says so in as many words).
+  A third-party capture of a live Ascension session nevertheless reports the real realm
+  sending a 94-byte frame on this number during the enter-world burst: a count of nine,
+  then nine ten-byte records whose first word descends from 762 to 94. The id space is
+  unidentified by them and by us. azerothcore-wotlk-coa#4128 sends its own
+  SMSG_COA_CONFIG on the same number, which is a different payload claim on the same
+  empty slot. Direction is inferred, not read: both sources have the server sending it,
+  and our own sender scan finds no send site for it in the client.
+
+layout:   # the capture reference's reading. L1 throughout: the capture is not shared, so
+          # we cannot re-derive a single field of it (docs/EVIDENCE.md).
+  - name: count
+    type: u32
+    evidence: L1
+    notes: >
+      The capture reference reports 9 in its sample. Its own arithmetic closes:
+      4 + 9 x 10 = 94, the payload size it states. That makes the reading self-consistent,
+      which is not the same as verified.
+  - repeat: count
+    fields:
+      - name: value
+        type: u32
+        evidence: L1
+        notes: >
+          The capture reference reports nine descending values -- 762, 498, 479, 185, 129,
+          97, 96, 95, 94 -- and calls the id space unidentified. No name for this field is
+          established; `value` is a placeholder.
+      - name: unknown_1
+        type: u32
+        evidence: L1
+        notes: "The capture reference reports zero in every record of its sample."
+      - name: unknown_2
+        type: u16
+        evidence: L1
+        notes: "The capture reference reports zero in every record of its sample."
+
+# No `client:` block: there is no handler to point at. That absence is the strongest fact
+# in this fiche and it is ours -- see the L3 provenance entries below.
+
+provenance:
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/opcodes.yaml (opcode-name switch)"
+    claim: "the client's table has no name for 0x0900"
+    note: >
+      0x0900 sits inside the unnamed run 0x08fe..0x0902; the table's unnamed entries all
+      answer 'unknown' (client/symbols/.../opcodes.md).
+  - level: L3
+    source: "client/symbols/ascension-extensions-2026-08-13/handlers.yaml and handlers.md"
+    claim: "the client registers no handler for 0x0900 in this build"
+    note: >
+      The registration scan covers Extensions.dll only, which would be a caveat for a
+      standard opcode -- those live in Ascension.exe -- but 0x0900 is far outside the
+      standard set, so on this build nothing can be consuming it. The nearest
+      config-shaped neighbour, 0x0903 SMSG_REPLICATE_CONFIG, has no registration either.
+  - level: L3
+    source: >
+      tools/extract/client_sender.py ~/CoaServer/client/ascension-live/Extensions.dll.ORIGINAL
+      --build ascension-extensions-2026-08-13 --only 0x0900 (run 2026-09-20, sha256
+      0f8d847b3adc44a963606f0cd4f7938ad6fcd6f4d87feac3131c7153bdf3bb11)
+    claim: "no push-site sender for 0x0900 in Extensions.dll; the client does not send it"
+    note: >
+      The scan finds `push <opcode>` before the CDataStore opcode write, so a sender that
+      materialises the opcode some other way would be missed. It is evidence of absence
+      of the usual idiom, not proof of absence.
+  - level: L1
+    source: >
+      CoinThrow's capture reference, kept outside this repository at
+      ~/CoaServer/reference/cointhrow/cointhrow-opcode-dbc-reference-2026-09-20.md,
+      section "0x0900 - unnamed 9-entry list"
+    claim: >
+      A real 94-byte server-to-client frame at t+10.49: u32 count = 9 then nine
+      {u32 value, u32 0, u16 0} records, values 762..94 descending; the frame chains
+      cleanly into three 0x0127 SMSG_SET_PROFICIENCY frames; the client has no handler
+      for it, so the packets are dropped.
+    note: >
+      L1 per docs/EVIDENCE.md: the author reports a live session (an Ascension 3.3.5a
+      client, build 12344) but the capture itself is not shared, so we grade our ability
+      to re-derive it, not their work. Our half of it -- name table, handler scan, sender
+      scan -- agrees with everything they say about the client side.
+  - level: L1
+    source: "azerothcore-wotlk-coa#4128 (CoinThrow), reported in docs/ROADMAP.md"
+    claim: "the CoA fork sends a SMSG_COA_CONFIG on 0x0900 in the login burst"
+    note: >
+      Not in the tree today: client/server-usage.yaml, which scans the modules for opcode
+      literals 0x0500..0x09ff, has no entry for 0x0900. Whatever that packet carries, it
+      is not the frame the capture reports, and on this client build neither is read.
+
+replay: null
+
+open_questions:
+  - "What are the nine descending values? Nothing here identifies the id space, and the
+     capture reference does not either."
+  - "Does any Ascension build handle 0x0900? Our name table and handler scan are one
+     build of Extensions.dll; a packet the realm kept sending suggests some build once
+     consumed it."
+  - "Is #4128's SMSG_COA_CONFIG the same wire shape as the captured frame, or a second,
+     unrelated use of a free number?"
+
+related:
+  - 0x0903
